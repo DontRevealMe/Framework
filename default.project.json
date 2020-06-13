@@ -2,44 +2,32 @@
   "name": "ILWDID",
   "tree": {
     "$className": "DataModel",
-    "ReplicatedStorage": {
-      "$className": "ReplicatedStorage",
-      "$path": "src/ReplicatedStorage",
-      "$ignoreUnknownInstances": true
-    },
-    "ReplicatedFirst": {
-      "$className": "ReplicatedFirst",
-      "src": {
-        "$path": "src/ReplicatedFirst"
-      }
-    },
     "ServerScriptService": {
       "$className": "ServerScriptService",
-      "$path": "src/ServerScriptService"
+      "Framework": {
+        "$path": "src/ServerScripts"
+      }
     },
     "ServerStorage": {
       "$className": "ServerStorage",
-      "$path": "src/ServerStorage",
-      "$ignoreUnknownInstances": true
+      "Framework": {
+        "$path": "src/Server"
+      }
     },
-    "Workspace": {
-      "$className": "Workspace",
-      "src": {
-        "$path": "src/Workspace"
+    "ReplicatedStorage": {
+      "$className": "ReplicatedStorage",
+      "Framework": {
+        "$path": "src/Shared"
       }
     },
     "StarterPlayer": {
       "$className": "StarterPlayer",
-      "StarterPlayerScripts" : {
+      "StarterPlayerScripts": {
         "$className": "StarterPlayerScripts",
-        "$path": "src/StarterPlayer/StarterPlayerScripts",
-        "$ignoreUnknownInstances": true
+        "Framework": {
+          "$path": "src/Client"
+        }
       }
-    },
-    "Chat": {
-      "$className": "Chat",
-      "$path": "src/Chat",
-      "$ignoreUnknownInstances": true
     }
   }
 }
