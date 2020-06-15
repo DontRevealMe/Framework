@@ -6,7 +6,7 @@
 </div>
 <p align="center">This is my personal framework I use.</p>
 
-# Usage example
+## Usage example
 ```lua
 local require = require(path.to.framework.loader)
 local Ambassador = require("Ambassador")
