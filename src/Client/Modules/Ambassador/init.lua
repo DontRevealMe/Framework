@@ -17,6 +17,15 @@ Ambassador._remotes = {}
 
 local REMOTE_STORAGE = game:GetService("ReplicatedStorage"):WaitForChild("Framework"):WaitForChild("__storage__"):WaitForChild("Ambassador")
 
+--[[**
+    Listens to multiple ambassadors at once. If there is no ambassador, it will try to create a new ambassador class, NOT A NEW REMOTE.
+    @param [t:Variant] dictionaries Format:
+    {
+        Location = string
+        Function = function
+    }
+    @returns [t:table] Contains the new connections made. 
+**--]]
 function Ambassador:Listen(...)
     --[[
         {
@@ -49,16 +58,31 @@ function Ambassador:Listen(...)
     return (#totalConnections==1 and totalConnections[1]) or totalConnections
 end
 
+--[[
+    Connects to an ambassador class.
+    @param [t:function] listener
+    @returns [t:RBXScriptConnection]
+--]]
 function Ambassador:Connect(...)
     return self._remote:Connect(...)
 end
 
+--[[
+    Fires the remote. This should be used if your ambassador type if a RemoteEvent.
+    @param [t:Variant]
+    @returns [t:Variant] If your ambassador type is a RemoteFuncction, it will return a variant. If not, it will return nothing.
+--]]
 function Ambassador:Send(...)
     if self then 
         return self._remote:Fire(...)
     end
 end
 
+--[[
+    Asnychoursly fires the remote over to the server. This should be used if your ambassador type is a RemoteFunction.
+    @param [t:Variant] 
+    @returns [t:Variant] If your ambassador type is a RemoteFuncction, it will return a variant. If not, it will return nothing.
+--]]
 function Ambassador:SendAsync(...)
     local arguments = (...)
     return Promise.async(function(resolve)
@@ -66,6 +90,10 @@ function Ambassador:SendAsync(...)
     end)
 end
 
+--[[
+    Destroys the ambassador class, but not the remote.
+    @returns [t:void]
+--]]
 function Ambassador:Destroy()
     if self then 
         self._remote:Destroy()
@@ -74,6 +102,11 @@ function Ambassador:Destroy()
     end
 end
 
+--[[
+    Creates a new ambassador class.
+    @param [t:string] location
+    @retrusn [t:Ambassador]
+--]]
 function Ambassador.new(location)
     do 
         -- Type checking
