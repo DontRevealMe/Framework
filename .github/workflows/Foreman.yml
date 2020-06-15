@@ -1,0 +1,18 @@
+name: Foreman
+
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+    branches:
+    - master
+
+jobs:
+  Install:
+    name: Foreman
+    runs-on: ubuntu-latest
+    steps:
+    - uses: rojo-rbx/setup-foreman@v1
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
