@@ -11,7 +11,6 @@
 --]]
 
 local table = require(script:WaitForChild("Modules"):WaitForChild("table"))
-local debounce = true
 local Frameworks = {
     ["Server"] = {
         Get = function()
@@ -46,7 +45,7 @@ local Frameworks = {
     }
 }
 
-return function(library, pass)
+return function(library)
     if typeof(library)=="string" then 
         --[[
             {
@@ -60,13 +59,13 @@ return function(library, pass)
             -- you're going to. 
             local totalFrameworks = {}
             local currentPermission = (game:GetService("RunService"):IsServer() and "Server") or (game:GetService("RunService"):IsClient() and "Client")
-            local SelectedFrameworks = Frameworks
+            local selectedFrameworks = Frameworks
             if goal then 
-                SelectedFrameworks = {
+                selectedFrameworks = {
                     [goal] = Frameworks[goal]
                 }
             end
-            for name,framework in pairs(SelectedFrameworks) do 
+            for name,framework in pairs(selectedFrameworks) do 
                 if currentPermission==framework.Permission or framework.Permission=="All" then 
                     -- Add framework the into a table
                     local success, error = pcall(function()
@@ -115,7 +114,7 @@ return function(library, pass)
             local function len(dict)
                 -- Don't wanna require table each time.
                 local keys = 0
-                for i,v in pairs(dict) do 
+                for _,_ in pairs(dict) do 
                     keys = keys + 1
                 end
                 return keys
