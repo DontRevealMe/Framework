@@ -54,7 +54,7 @@ return function(library)
                 Permission = "Client" or "Shared" or "Server"
             }
         --]]
-        local function getFrameworks(goal)
+        local function getSides(goal)
             -- Gets avaliable frameworks. If a goal value is passed, it will target that one framework only. This is done to improve performance if you already know which framework
             -- you're going to. 
             local totalFrameworks = {}
@@ -90,7 +90,7 @@ return function(library)
         local function compileModules(modulesOnly, goal)
             -- Compiles modules together
             local compiled = {}
-            local totalFrameworks = getFrameworks(goal)
+            local totalFrameworks = getSides(goal)
 
             local function compileRecursion(parent)
                 --[[
