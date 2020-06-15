@@ -15,5 +15,5 @@ jobs:
     - uses: rojo-rbx/setup-foreman@v1
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-    - name: Lint
+    - name: Linting
       run: selene src
