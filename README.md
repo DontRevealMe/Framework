@@ -3,6 +3,9 @@
     <a href="https://discord.gg/22Uw8ZY">
         <img src="https://img.shields.io/badge/discord-server-blue.svg">
     </a>
+    <a href="https://github.com/DontRevealMe/Framework/actions?query=workflow%3ACI">
+        <img src="https://github.com/DontRevealMe/Framework/workflows/CI/badge.svg">
+    </a>
 </div>
 <p align="center">This is my personal framework I use.</p>
 
