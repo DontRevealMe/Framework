@@ -8,7 +8,7 @@ Please follow these guidelines if you're gonna help us.
    - OOP
    - [Promises](https://devforum.roblox.com/t/promises-and-why-you-should-use-them/350825)
  - [Rojo](https://github.com/rojo-rbx/rojo)
- - [Selence](https://github.com/Kampfkarren/selene)
+ - [Selene](https://github.com/Kampfkarren/selene)
 
 ## Framework structure
 The framework structure has ``sides`` which contain ``folders`` which contain ``libraries``, modules, and scripts.
