@@ -40,11 +40,23 @@ function Queue:Dequeue(index)
 end
 
 --[[**
-    Wether or not the queue is running or not.
+    The status of the coroutine loop.
+    @returns [t:string] status
+**--]]
+function Queue:Status()
+    return coroutine.status(self._updateCoroutine)
+end
+
+--[[**
+    Deletes the queue and stops everything.
     @returns [t:void]
 **--]]
-function Queue:IsSleeping()
-    return coroutine.status(self._updateCoroutine) == "suspended" or coroutine.status(self._updateCoroutine) == "dead"
+function Queue:Destroy()
+    self._wakeUpCon:Disconnect()
+    self.Queue = {}
+    self._updateCoroutine = nil
+    self.WakeUp:Destroy()
+    self = nil
 end
 
 --[[**
@@ -54,11 +66,11 @@ end
 function Queue.new()
     local self = {}
     setmetatable(self, Queue)
-    self._wakeUp = Signal.new()
+    self.WakeUp = Signal.new()
     self.Queue = {}
     self._updateCoroutine = coroutine.create(function()
         while true do 
-            if #self.Queue == 0 or self["Updater"]==nil then 
+            if self==nil or #self.Queue == 0 or self["Updater"]==nil then 
                 coroutine.yield()
             else
                 local current = self.Queue[#self.Queue]
