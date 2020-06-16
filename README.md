@@ -22,4 +22,13 @@ myAmbassador:Connect(function(plr, message)
 end)
 ```
 
+## Credits
+This repository couldn't be made without the help of:
+[Promise](https://github.com/evaera/roblox-lua-promise)
+[Signal](https://gist.github.com/Anaminus/afd813efc819bad8e560caea28942010)
+
+### Inspired from
+[NevermoreEngine](https://github.com/Quenty/NevermoreEngine)
+[DataStore2](https://github.com/Kampfkarren/Roblox/)
+
 This repository is licensed under MIT
