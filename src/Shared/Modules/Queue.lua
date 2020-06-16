@@ -34,7 +34,7 @@ function Queue.new()
                 coroutine.yield()
             else
                 local current = self.Queue[#self.Queue]
-                local succ, err = pcall(self.Updater)
+                local succ, err = pcall(self.Updater, current)
                 if not succ then
                     warn(string.format("An unexpected error occoured at queue index %s. %q", #self.Queue, err))
                 else
@@ -44,7 +44,7 @@ function Queue.new()
         end
     end)
     self._wakeUpCon = self._wakeUp.Event:Connect(function()
-        coroutine.resume(self.Updater)
+        coroutine.resume(self._updateCoroutine)
     end)
     return self
 end
