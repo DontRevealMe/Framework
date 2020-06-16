@@ -23,6 +23,10 @@ function Queue:Dequeue(index)
     table.remove(self.Queue, index or #self.Queue)
 end
 
+function Queue:IsSleeping()
+    return coroutine.status(self._updateCoroutine) == "suspended" or coroutine.status(self._updateCoroutine) == "dead"
+end
+
 function Queue.new()
     local self = {}
     setmetatable(self, Queue)
