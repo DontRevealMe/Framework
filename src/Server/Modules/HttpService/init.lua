@@ -16,6 +16,14 @@ Module._queueData = {
     requestsMade = 0,
     wakeQueue = Signal.new()
 }
+
+--[[**
+    Sends an HTTPService request.
+    @param [t:dictionary] requestDictionary See https://developer.roblox.com/en-us/api-reference/function/HttpService/RequestAsync for more info
+    @param [t:bool] cache If true, the method will cache the response
+    @param [t:boool] useCache If true, the method will search the cache for a response and if there isn't one, it will send a request.
+    @returns [t:Promise]
+**--]]
 function Module:RequestAsync(requestDictionary, cache, useCache)
     return Promise.async(function(resolve, reject, onCancel)
         if useCache and Module._cache[requestDictionary.Url] then 
@@ -55,6 +63,14 @@ function Module:RequestAsync(requestDictionary, cache, useCache)
     end)
 end
 
+--[[
+    "Quicker" method of sending requests without having to go through the hassle of setting application/json. 
+    DEPRECATED METHOD. USE :RequestAsync.
+    @param [t:dictionary] requestDictionary See https://developer.roblox.com/en-us/api-reference/function/HttpService/RequestAsync for more info
+    @param [t:bool] cache If true, the method will cache the response
+    @param [t:boool] useCache If true, the method will search the cache for a response and if there isn't one, it will send a request.
+    @returns [t:Promise]
+--]]
 function Module:QuickRequestAsync(dictionary, cache, useCache)
     dictionary.Method = dictionary.Method:upper()
     if not dictionary["Headers"] then
