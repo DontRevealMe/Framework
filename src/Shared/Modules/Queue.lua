@@ -31,9 +31,9 @@ function Queue.new()
                 coroutine.yield()
             else
                 local current = self.Queue[#self.Queue]
-                local succ, err = pcall(self.Updater())
+                local succ, err = pcall(self.Updater)
                 if not succ then
-                    warn(string.format("An unexpected error occoured at queue %"))
+                    warn(string.format("An unexpected error occoured at queue index %s. %q", #self.Queue, err))
                 else
                     table.remove(self.Queue)
                 end
