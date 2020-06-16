@@ -1,3 +1,5 @@
+# Contributing
+
 <h1 align="center">Framework</h1>
 <div align="center">
     <a href="https://discord.gg/22Uw8ZY">
@@ -10,6 +12,7 @@
 <p align="center">This is my personal framework I use.</p>
 
 ## Usage example
+
 ```lua
 local require = require(path.to.framework.loader)
 local Ambassador = require("Ambassador")
@@ -24,12 +27,14 @@ end)
 
 ## Credits
 This repository couldn't be made without the help of:
- - [Promise](https://github.com/evaera/roblox-lua-promise)
- - [Signal](https://gist.github.com/Anaminus/afd813efc819bad8e560caea28942010)
- - [t](https://devforum.roblox.com/t/t-a-runtime-type-checker-for-roblox/139769)
+
+- [Promise](https://github.com/evaera/roblox-lua-promise)
+- [Signal](https://gist.github.com/Anaminus/afd813efc819bad8e560caea28942010)
+- [t](https://devforum.roblox.com/t/t-a-runtime-type-checker-for-roblox/139769)
 
 ### Inspired from
- - [NevermoreEngine](https://github.com/Quenty/NevermoreEngine)
- - [DataStore2](https://github.com/Kampfkarren/Roblox/)
+
+- [NevermoreEngine](https://github.com/Quenty/NevermoreEngine)
+- [DataStore2](https://github.com/Kampfkarren/Roblox/)
 
 This repository is licensed under MIT
