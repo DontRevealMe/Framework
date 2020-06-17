@@ -14,8 +14,9 @@ Queue.ClassName = "Queue"
     @param [t:Function] function
     @returns [t:void]
 **--]]
-function Queue:SetUpdater(func)
+function Queue:SetUpdater(func, handleRemoval)
     self.Updater = func
+    self._handleRemoval = handleRemoval or true
 end
 
 --[[**
@@ -68,6 +69,7 @@ function Queue.new()
     setmetatable(self, Queue)
     self.WakeUp = Signal.new()
     self.Queue = {}
+    self._handleRemoval = true
     self._updateCoroutine = coroutine.create(function()
         while true do 
             if self==nil or #self.Queue == 0 or self["Updater"]==nil then 
@@ -77,7 +79,7 @@ function Queue.new()
                 local succ, err = pcall(self.Updater, current)
                 if not succ then
                     warn(string.format("An unexpected error occoured at queue index %s. %q", #self.Queue, err))
-                else
+                elseif self._handleRemoval then
                     table.remove(self.Queue)
                 end
             end
