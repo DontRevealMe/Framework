@@ -6,7 +6,8 @@ local Package = {}
 Package.__index = Package
 
 function Package:Send()
-
+    Utility.PublishQueue:Enqueue(self)
+    Utility.CurrentlyBoxing[self.Topic] = Package.new()
 end
 
 function Package:AddPacket(packet, check)
