@@ -18,6 +18,8 @@ function Package:GetSize()
     for _,packet in pairs(self.Packets) do
         size = size + Utility:GetSize(packet)
     end
+    self.Size = size
+    return size
 end
 
 function Package.new(topic)
