@@ -1,0 +1,29 @@
+site_name: Framework Documentation
+nav:
+  - Home: index.md
+  - Guide:
+    - "Installation Guide": Guide\Installation.md
+  - API:
+    - Classes:
+      - Queue: API\Classes\Queue.md
+    - Libraries:
+      - DataStoreService: API\Libraries\DataStoreService.md
+      - MessagingService: API\Libraries\MessagingService.md
+      - Queue: API\Libraries\Queue.md
+    - Sides:
+      - Server: API\Sides\Server.md
+      - Shared: API\Sides\Shared.md
+      - Client: API\Sides\Client.md
+    - Internal: API\Internal\index.md
+theme:
+  name: material
+  language: en
+  palette:
+    primary: black
+    accent: blue
+repo_url: https://github.com/DontRevealMe/Framework
+repo_name: Framework
+remote_branch: gh-pages
+markdown_extensions:
+  - admonition
+  - codehilite
