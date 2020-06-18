@@ -29,8 +29,11 @@ Utility.PublishQueue:SetUpdater(false, function(package)
     end)
     if not succ then
         warn(string.format("Failed to send package: %q\n\n%s", package.Topic, err))
-        package["Retries"] = package["Retries"] or 0
-        package.Retries = package.Retries + 1
+        package["Fails"] = package["Fails"] or 0
+        package.Fails = package.Fails + 1
+        if package.Fails >= 5 then
+            table.remove(Utility.PublishQueue.Queue, 1)
+        end
     else
         table.remove(Utility.PublishQueue.Queue, 1)
     end
