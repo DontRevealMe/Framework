@@ -16,7 +16,7 @@ Queue.ClassName = "Queue"
 **--]]
 function Queue:SetUpdater(handleRemoval, func)
     self.Updater = func
-    self._handleRemoval = handleRemoval or true
+    self._handleRemoval = (handleRemoval==nil and true) or handleRemoval
 end
 
 --[[**
