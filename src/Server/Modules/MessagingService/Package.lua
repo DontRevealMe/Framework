@@ -5,9 +5,11 @@ local Utility = require(script.Parent:WaitForChild("Util"))
 local Package = {}
 Package.__index = Package
 
-function Package:Send()
+function Package:Send(dontReplace)
     Utility.PublishQueue:Enqueue(self)
-    Utility.CurrentlyBoxing[self.Topic] = Package.new()
+    if not dontReplace then
+        Utility.CurrentlyBoxing[self.Topic] = Package.new()
+    end
 end
 
 function Package:AddPacket(packet, check)
