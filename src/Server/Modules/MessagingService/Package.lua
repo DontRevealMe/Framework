@@ -32,6 +32,16 @@ function Package:FireAllResponses(...)
     end
 end
 
+function Package:Destroy()
+    for _,packet in pairs(self.Packets) do
+        packet:Destroy()
+    end
+    if Utility.CurrentlyBoxing[self.Topic]==self then
+        Utility.CurrentlyBoxing[self.Topic] = nil
+    end
+    self = nil
+end
+
 function Package.new(topic)
     local self = {}
     self.Topic = topic
