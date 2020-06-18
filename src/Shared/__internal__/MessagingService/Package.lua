@@ -9,8 +9,11 @@ function Package:Send()
 
 end
 
-function Package:AddPacket(packet)
-
+function Package:AddPacket(packet, check)
+    if check and self:GetSize() + packet:GetSize() >=900 then
+        return false
+    end
+    table.insert(self.Packets, packet)
 end
 
 function Package:GetSize()
