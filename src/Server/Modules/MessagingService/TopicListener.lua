@@ -9,6 +9,7 @@ local Utility = require(script.Parent:WaitForChild("Util"))
 
 local TopicListener = {}
 TopicListener.__index = TopicListener
+TopicListener._cache = {}
 
 local function GetSegment(UID)
     if not Utility.PacketSegments[UID] then
@@ -20,7 +21,18 @@ local function GetSegment(UID)
     return Utility.PacketSegments[UID]
 end
 
+function TopicListener:_invokeAllCallback(...)
+    for _,callback in pairs(self._callBackTable) do
+        callback(...)
+    end
+end
+
 function TopicListener.new(topic, getIncomplete, callbackFunc)
+    if TopicListener._cache[topic] then
+        --  Check cache
+        table.insert(TopicListener._cache[topic]._callBackTable, callbackFunc)
+        return TopicListener._cache[topic]
+    end
     local self = {}
     setmetatable(self, TopicListener)
     self.Connection = MessagingService:SubscribeAsync(topic, function(package, timeSent)
@@ -29,18 +41,25 @@ function TopicListener.new(topic, getIncomplete, callbackFunc)
         for _,packet in pairs(package.Packets) do
             if packet["UID"] then
                 -- Segment packet
-                local segment = GetSegment(packet.UID)
+                local segment = Utility.PacketSegments[packet.UID] or {
+                    Packets = {},
+                    Max = nil
+                }
+                local order, max = string.split(packet.Order)
+                order, max = tonumber(order), tonumber(max)
                 table.insert(segment.Packets, packet.Order, packet.Data)
                 Utility.PacketSegments[packet.UID] = segment
-                if Utility
+                if #Utility.PacketSegments[packet.UID].Segments==max then
+                    self:_invokeAllCallback(packet.Data, timeSent)
+                end
             end
             if not packet["UID"] or getIncomplete then
-                self._callBack(packet.Data, timeSent)
+                self:_invokeAllCallback(packet.Data, timeSent)
             end
         end
     end)
     self.Signal = Signal.new()
-    self._callBack = callbackFunc
+    self._callBackTable = {callbackFunc}
     return self
 end
 
