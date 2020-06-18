@@ -15,7 +15,7 @@ local Util = {
 function Util:GetSize(...)
     local size = 0
     for _,v in pairs({...}) do
-        size = size + (typeof(v)=="table" and (HttpService:JSONEncode(v["Size"]):len() or HttpService:JSONEncode(v):len())) or (typeof(v)=="string" and v:len())
+        size = size + (typeof(v)=="table" and HttpService:JSONEncode(v):len()) or (typeof(v)=="string" and v:len())
     end
     return size
 end

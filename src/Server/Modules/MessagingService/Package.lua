@@ -18,7 +18,11 @@ function Package:AddPacket(packet, check)
 end
 
 function Package:GetSize()
-    self.Size = Utility:GetSize(unpack(self.Packets))
+    local dataList = {}
+    for _,v in pairs(self.Packets) do
+        table.insert(dataList, v.Data)
+    end
+    self.Size = Utility:GetSize(unpack(dataList))
     return self.Size
 end
 

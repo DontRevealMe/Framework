@@ -5,7 +5,7 @@ local Packet = {}
 Packet.__index = Packet
 
 function Packet:GetSize()
-    return Utility:GetSize(self)
+    return Utility:GetSize(self.Data)
 end
 
 function Packet.new(data, topic)
