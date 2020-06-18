@@ -10,6 +10,7 @@ local Util = {
     PublishQueue = Queue.new(),
     PacketBuffer = {},
     CurrentlyBoxing = {},
+    PacketSegments = {},
 }
 
 function Util:GetSize(...)

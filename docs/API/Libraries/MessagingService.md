@@ -1,11 +1,20 @@
 # MessagingService
 
-!!! Notice
+!!! Accessibility
     This library can only be accessed by the server
 
 Manages the sending and handling of packets across server.
 
 ## API
+
+### Limitations
+
+This is measured using ``HttpService:JSONEncode()``.
+
+| Property | Limit |
+|----------|-------|
+| Packet size | 800 characters |
+| Package size | 950 characters |
 
 ### Properties
 
@@ -15,7 +24,7 @@ None.
 
 | Function Name | Description | Returns |
 |---------------|-------------|---------|
-| :SendAsync() | Sends a packet to other servers. | ``void`` |
+| ``RBXScriptConnection`` :SendAsync(``table`` data, ``string`` name ) | Sends a packet to other servers. | ``RBXScriptConnection`` |
 | :ListenAsync() | Listens for a specific topic. | ``TopicListener`` |
 
 ### :SendAsync
@@ -48,6 +57,5 @@ If a value isn't passed in for the ``topic`` argument, the message/listener will
 On default settings, there are 3 MessagingService channels. Due to each topic having a throttle limit, we split it across 3 channels. Of course, this method is not fool proof but it helps lower the chances of a throttle.
 If you go higher, you may run into the risk of throttling the Subscribe limit which can break MessagingService.
 
-#### Reserved topics
-
-``FrameworkChannel[NUMBER]`` is reserved. You'll be fine if you use a topic called "FrameworkChannelABC" as it's not using a number at the end, but it's highly unadvised you do that.
+!!! Warning
+    ``FrameworkChannel[NUMBER]`` is reserved. You'll be fine if you use a topic called "FrameworkChannelABC" as it's not using a number at the end, but you really shouldn't be doing that.

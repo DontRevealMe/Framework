@@ -1,6 +1,6 @@
 # DataStoreService
 
-!!! Warning
+!!! Accessibility
     This library can only be accessed by the server
 
 !!! Warning
