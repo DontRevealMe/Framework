@@ -23,6 +23,7 @@ Utility.PacketQueue:SetUpdater(false, function()
                 local segmentData = HttpService:JSONEncode(packet.Data):sub( (i - 1) * 800 + 1, i * 800 )
                 local newPacket = Packet.new(segmentData, packet.Topic)
                 newPacket.Data.UID = UID
+                newPacket.Data.Order = i
                 if not package:AddPacket(newPacket, true) then
                     local newPackage = Package.new(packet.Topic)
                     newPackage:AddPacket(newPacket, false)
