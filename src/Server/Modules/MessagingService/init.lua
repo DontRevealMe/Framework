@@ -23,7 +23,7 @@ Utility.PacketQueue:SetUpdater(false, function()
                 local segmentData = HttpService:JSONEncode(packet.Data):sub( (i - 1) * 800 + 1, i * 800 )
                 local newPacket = Packet.new(segmentData, packet.Topic)
                 newPacket.Data.UID = UID
-                newPacket.Data.Order = i
+                newPacket.Data.Order = i .. "/" .. math.ceil(packet:GetSize() / 800)
                 if not package:AddPacket(newPacket, true) then
                     local newPackage = Package.new(packet.Topic)
                     newPackage:AddPacket(newPacket, false)
@@ -49,9 +49,11 @@ Utility.PublishQueue:SetUpdater(false, function(package)
         package["Fails"] = package["Fails"] or 0
         package.Fails = package.Fails + 1
         if package.Fails >= 5 then
+            package:FireAllResponses("Fail")
             table.remove(Utility.PublishQueue.Queue, 1)
         end
-    else
+    elseif succ or (package["Fails"] and package["Fails"] >= 5)
+        package:FireAllResponses("Success")
         table.remove(Utility.PublishQueue.Queue, 1)
     end
     wait(1)
