@@ -3,6 +3,8 @@ nav:
   - Home: index.md
   - Guide:
     - "Installation Guide": Guide\Installation.md
+    - Contributing:
+      - "Documentation Standards": Guide\Contributing\DocumentationStandards.md
   - API:
     - Classes:
       - Queue: API\Classes\Queue.md

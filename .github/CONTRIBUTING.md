@@ -16,12 +16,12 @@ Please follow these guidelines if you're gonna help us.
 
 ## Framework structure
 
-The framework structure has ``sides`` which contain ``folders`` which contain ``libraries``, modules, and scripts.
-Any internal module should generally be put into the side's ``__internal__``.
+The framework structure has ``sides`` which contain ``folders`` which contain ``libraries``, modules, and scripts. Any internal module should generally be put into the side's ``__internal__``.
 
 ## Documentation
 
-All non-internal methods must be documented using [Documentation Reader](https://devforum.roblox.com/t/documentation-reader-a-plugin-for-scripters/128825). We use RoDocs standard but there are plans to switch over to XML. 
+It's now optional to document using [Documentation Reader](https://devforum.roblox.com/t/documentation-reader-a-plugin-for-scripters/128825).
+We now use [Material for MkDocs](https://squidfunk.github.io/mkdocs-material/) to document code. To find documentation standards go [here].
 
 ## Coding Style
 
@@ -39,14 +39,14 @@ Please try to follow this naming scheme as best as you can. Generally, we follow
 When naming a newly made script, use:
 
 ```lua
---[[
-    Name: fileName.x.lua
-    Author: Whoever made this file
-    Description: Information on the file
---]]
+--  description
+--  @author name1, name2, John Doe, Tim, ...
+
+code
+...
 ```
 
-If you're creating a class, name the script after the class. 
+If you're creating a class, name the script after the class.
 
 ### Yielding
 
