@@ -9,17 +9,13 @@ function Package:Send()
 
 end
 
-function Package:AddPacket()
+function Package:AddPacket(packet)
 
 end
 
 function Package:GetSize()
-    local size = 0
-    for _,packet in pairs(self.Packets) do
-        size = size + Utility:GetSize(packet)
-    end
-    self.Size = size
-    return size
+    self.Size = Utility:GetSize(unpack(self.Packets))
+    return self.Size
 end
 
 function Package.new(topic)
