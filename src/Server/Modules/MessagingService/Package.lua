@@ -26,6 +26,12 @@ function Package:GetSize()
     return self.Size
 end
 
+function Package:FireAllResponses(...)
+    for _,packet in pairs(self.Packets) do
+        packet.Response:Fire(...)
+    end
+end
+
 function Package.new(topic)
     local self = {}
     self.Topic = topic
