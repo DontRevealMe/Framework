@@ -16,7 +16,7 @@ function Packet.new(data, topic)
         Topic = topic,
         Data = data
     }
-    self.Size = Utility:GetSize(self)
+    self.Size = self:GetSize()
     return self
 end
 
