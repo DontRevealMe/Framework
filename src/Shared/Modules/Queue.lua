@@ -27,7 +27,7 @@ end
 function Queue:Enqueue(data)
     table.insert(self.Queue, 1, data)
     if #self.Queue == 1 then 
-        self._wakeUp:Fire()
+        self.WakeUp:Fire()
     end
 end
 
