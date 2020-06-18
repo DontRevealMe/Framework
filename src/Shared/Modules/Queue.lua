@@ -85,7 +85,7 @@ function Queue.new()
             end
         end
     end)
-    self._wakeUpCon = self._wakeUp.Event:Connect(function()
+    self._wakeUpCon = self.WakeUp.Event:Connect(function()
         coroutine.resume(self._updateCoroutine)
     end)
     return self
