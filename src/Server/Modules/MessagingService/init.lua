@@ -52,7 +52,7 @@ Utility.PublishQueue:SetUpdater(false, function(package)
             package:FireAllResponses("Fail")
             table.remove(Utility.PublishQueue.Queue, 1)
         end
-    elseif succ or (package["Fails"] and package["Fails"] >= 5)
+    elseif succ or (package["Fails"] and package["Fails"] >= 5) then
         package:FireAllResponses("Success")
         table.remove(Utility.PublishQueue.Queue, 1)
     end
