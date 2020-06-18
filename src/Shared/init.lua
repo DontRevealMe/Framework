@@ -18,12 +18,6 @@ local Frameworks = {
         end,
         Permission = "Server",
     },
-    ["ServerScript"] = {
-        Get = function()
-            return game:GetService("ServerScriptService"):WaitForChild("Framework")
-        end,
-        Permission = "Server"
-    },
     ["Shared"] = {
         Get = function()
             return game:GetService("ReplicatedStorage"):WaitForChild("Framework")
