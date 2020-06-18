@@ -1,5 +1,6 @@
+--  Packet class
+--  @author DontRevealMe
 
-local HttpService = game:GetService("HttpService")
 local Utility = require(script.Parent:WaitForChild("Util"))
 local Packet = {}
 Packet.__index = Packet
