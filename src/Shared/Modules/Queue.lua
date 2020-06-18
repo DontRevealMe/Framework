@@ -14,7 +14,7 @@ Queue.ClassName = "Queue"
     @param [t:Function] function
     @returns [t:void]
 **--]]
-function Queue:SetUpdater(func, handleRemoval)
+function Queue:SetUpdater(handleRemoval, func)
     self.Updater = func
     self._handleRemoval = handleRemoval or true
 end
