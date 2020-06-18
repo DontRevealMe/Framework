@@ -2,12 +2,6 @@
   "name": "ILWDID",
   "tree": {
     "$className": "DataModel",
-    "ServerScriptService": {
-      "$className": "ServerScriptService",
-      "Framework": {
-        "$path": "src/ServerScripts"
-      }
-    },
     "ServerStorage": {
       "$className": "ServerStorage",
       "Framework": {
