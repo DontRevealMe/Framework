@@ -8,7 +8,8 @@ local Queue = require("Queue")
 local Util = {
     PacketQueue = Queue.new(),
     PublishQueue = Queue.new(),
-    PacketBuffer = {}
+    PacketBuffer = {},
+    CurrentlyBoxing = {},
 }
 
 function Util:GetSize(...)
