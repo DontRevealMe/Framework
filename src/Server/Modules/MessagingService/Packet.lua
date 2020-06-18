@@ -12,10 +12,7 @@ function Packet.new(data, topic)
     local self = {}
     setmetatable(self, Packet)
     self.Topic = topic
-    self.Data = {
-        Topic = topic,
-        Data = data
-    }
+    self.Data = data
     self.Size = self:GetSize()
     return self
 end
