@@ -15,8 +15,9 @@ Utility.PacketQueue:SetUpdater(false, function()
         local package = Utility.CurrentlyBoxing[packet.Topic] or Package.new(packet.Topic)
         if not package:AddPacket(packet, true) then
             package:Send()
+        else
+            table.remove(buffer, #buffer)
         end
-        table.remove(buffer, #buffer)
     end
 end)
 
