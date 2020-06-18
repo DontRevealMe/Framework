@@ -2,10 +2,11 @@
 local HttpService = game:GetService("HttpService")
 local Utility = require(script.Parent:WaitForChild("Util"))
 local Packet = {}
+Packet.__index = Packet
 
 function Packet.new(data, topic)
     local self = {}
-    setmetatable(self, data)
+    setmetatable(self, Packet)
     self.Topic = topic
     self.Data = {
         Topic = topic,
