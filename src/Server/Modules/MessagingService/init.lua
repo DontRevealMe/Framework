@@ -4,11 +4,27 @@
 local MessagingService = game:GetService("MessagingService")
 local HttpService = game:GetService("HttpService")
 local require = require(game:GetService("ReplicatedStorage"):WaitForChild("Framework"))
+local Promise = require("Promise")
 local Utility = require(script:WaitForChild("Util"))
 local Package = require(script:WaitForChild("Package"))
 local Packet = require(script:WaitForChild("Packet"))
+local TopicListener = require(script:WaitForChild("TopicListener"))
 
 local module = {}
+
+function Module:SendAsync(topic, data, useChannel)
+    topic = topic or "FrameworkChannel" .. Random.new(os.time()):NextInteger(1, 3)
+    local packet = Packet.new(data, topic)
+    Utility.PacketQueue:Enqueue(packet)
+
+    return Promise.async(function(resolve)
+        resolve(packet.Response.Event:Wait())
+    end)
+end
+
+function Module:Listen(topic, getIncomplete, callback)
+    return TopicListener.new(topic, getIncomplete, callback)
+end
 
 Utility.PacketQueue:SetUpdater(false, function()
     local buffer = Utility.PacketQueue.Queue
@@ -51,10 +67,12 @@ Utility.PublishQueue:SetUpdater(false, function(package)
         if package.Fails >= 5 then
             package:FireAllResponses("Fail")
             table.remove(Utility.PublishQueue.Queue, 1)
+            package:Destroy()
         end
     elseif succ or (package["Fails"] and package["Fails"] >= 5) then
         package:FireAllResponses("Success")
         table.remove(Utility.PublishQueue.Queue, 1)
+        package:Destroy()
     end
     wait(1)
 end)
