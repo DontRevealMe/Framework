@@ -1,17 +1,24 @@
 # MessagingService
 
-!!! Warning
-    This library can only be accessed by the server.
+!!! Notice
+    This library can only be accessed by the server
 
-Framework for handling the recieving and sending of data through messaging service.
+Manages the sending and handling of packets across server.
 
 ## How it works
 
-The framework's MessagingService works by treating send requests as packets. These packets are put into a ```package``` and are sent all at once. A package will generally hold as many packets possible until it reaches the 800 character limit.
-If your packet exceeds the 800 character limit, it will generally be broken up into multiple packets and sent overtime.
+### Packets
 
-!!! Warning
-    Packets that exceed the 800 character limit may have longer send times. This will also affect other packages waiting in queue awaiting to be sent.
+Packets are an internal OOP class which are comprised of properties that contain it's topic, data, and unique ID if the packet is a segment.
+
+### Packages
+
+Packages contain a group of packets and will be sent automically after a 1 second it has been created. Packages can only contain at most, 850 data in length, but each packet is restricted to 800 characters.
+
+### Segments
+
+In the odd case there is a packet larger than 800 characters, the server will attempt to split the packet data up into serveral segments. These segment packets will be sent through.
+The con of this is that it may delay publishes by several seconds which is why it's reccomended that you try to keep data below 800 characters.
 
 ## API
 
@@ -19,4 +26,14 @@ If your packet exceeds the 800 character limit, it will generally be broken up i
 
 | Function Name | Description | Returns |
 |---------------|-------------|---------|
-| ```void``` :SendAsync(```table``` data=```nil```, ```string``` name=```nil``` ```[optional]```) | Generates a new MessagingService class. | Returns a ```MessagingService``` class. |
+| :SendAsync() | Sends a packet to other servers. | ``void`` |
+| :ListenAsync() | Listens for a specific topic. | ``TopicListener`` |
+
+### :SendAsync
+
+| ``void`` :SendAsync(``string`` topic=nil, ``Variant`` data=nil) |
+|----|
+| Sends the given data to other servers in the form of a packet. |
+
+!!! Warning
+    If your packets exceed 800 characters, expect all other packets to be delayed by ``math.ceil(length / 800)``. Length is calculate by using HttpService:JSONEncode().
