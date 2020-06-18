@@ -75,12 +75,12 @@ function Queue.new()
             if self==nil or #self.Queue == 0 or self["Updater"]==nil then 
                 coroutine.yield()
             else
-                local current = self.Queue[#self.Queue]
+                local current = self.Queue[1]
                 local succ, err = pcall(self.Updater, current)
                 if not succ then
                     warn(string.format("An unexpected error occoured at queue index %s. %q", #self.Queue, err))
                 elseif self._handleRemoval then
-                    table.remove(self.Queue)
+                    table.remove(self.Queue, 1)
                 end
             end
         end
