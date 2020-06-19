@@ -13,7 +13,6 @@ local TopicListener = require(script:WaitForChild("TopicListener"))
 local module = {}
 
 function module:SendAsync(topic, data, useChannel)
-    topic = topic or "FrameworkChannel" .. Random.new(os.time()):NextInteger(1, 3)
     local packet = Packet.new(data, topic)
     Utility.PacketQueue:Enqueue(packet)
 
@@ -22,8 +21,9 @@ function module:SendAsync(topic, data, useChannel)
     end)
 end
 
-function module:Listen(topic, getIncomplete, callback)
-    return TopicListener.new(topic, getIncomplete, callback)
+function module:Listen(topic, getComplete, callback)
+    local topicListener = Utility.TopicListenerCache[topic] or TopicListener.new(topic)
+    return topicListener:Connect(getComplete, callback)
 end
 
 Utility.PacketQueue:SetUpdater(false, function()
