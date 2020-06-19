@@ -18,7 +18,7 @@ function module:SendAsync(topic, data, useChannel)
     Utility.PacketQueue:Enqueue(packet)
 
     return Promise.async(function(resolve)
-        resolve(packet.Response.Event:Wait())
+        resolve(packet.Response:Wait())
     end)
 end
 
@@ -27,28 +27,45 @@ function module:Listen(topic, getIncomplete, callback)
 end
 
 Utility.PacketQueue:SetUpdater(false, function()
+
+    local function sendPackage(package, dontReplace)
+        Utility.PublishQueue:Enqueue(package)
+        if not dontReplace then
+            Utility.CurrentlyBoxing[package.Topic] = Package.new(package.Topic)
+        end
+    end
+
     local buffer = Utility.PacketQueue.Queue
-    Utility.PacketQueue.Queue = {}
     while #buffer > 0 do
         local packet = buffer[1]
         local package = Utility.CurrentlyBoxing[packet.Topic] or Package.new(packet.Topic)
+        if package["Sender"] == nil then
+            coroutine.resume(coroutine.create(function()
+                wait(1)
+                sendPackage(package)
+            end))
+            package["Sender"] = true
+        end
         if packet:GetSize()>=800 then
             --  Break the packet up
             local UID = HttpService:GenerateGUID(false)
-            for i=1, math.ceil(packet:GetSize() / 800) do
-                local segmentData = HttpService:JSONEncode(packet.Data):sub( (i - 1) * 800 + 1, i * 800 )
+            local totalSegments = math.ceil(packet:GetSize() / 800)
+            for i=1, totalSegments do
+                local segmentData = HttpService:JSONEncode(packet.Data.Data):sub( (i - 1) * 800 + 1, i * 800 )
                 local newPacket = Packet.new(segmentData, packet.Topic)
                 newPacket.Data.UID = UID
-                newPacket.Data.Order = i .. "/" .. math.ceil(packet:GetSize() / 800)
+                newPacket.Data.Order = i .. "/" .. totalSegments
                 if not package:AddPacket(newPacket, true) then
+                    -- Create a new package if we cannot fit the packet inside. 
                     local newPackage = Package.new(packet.Topic)
                     newPackage:AddPacket(newPacket, false)
-                    newPackage:Send(true)
+                    sendPackage(newPackage, true)
                 end
             end
+            table.remove(buffer, 1)
         elseif not package:AddPacket(packet, true) then
             --  Package is full, send package.
-            package:Send()
+            sendPackage(package)
         else
             --  Successful, remove the buffer from the list
             table.remove(buffer, 1)
@@ -58,10 +75,15 @@ end)
 
 Utility.PublishQueue:SetUpdater(false, function(package)
     local succ, err = pcall(function()
-        MessagingService:PublishAsync(false, HttpService:JSONEncode(package.Packets))
+        local dataOnly = {}
+        for _,packet in pairs(package.Packets) do
+            table.insert(dataOnly, packet.Data)
+        end
+        MessagingService:PublishAsync(package.Topic, HttpService:JSONEncode(dataOnly))
     end)
     if not succ then
-        warn(string.format("Failed to send package: %q\n\n%s", package.Topic, err))
+        warn(string.format("Failed to send package: %q\n%s", tostring(package.Topic), tostring(err)))
+        --  If the package fails 5 or more times, just remove the package and give up.
         package["Fails"] = package["Fails"] or 0
         package.Fails = package.Fails + 1
         if package.Fails >= 5 then
@@ -69,12 +91,12 @@ Utility.PublishQueue:SetUpdater(false, function(package)
             table.remove(Utility.PublishQueue.Queue, 1)
             package:Destroy()
         end
-    elseif succ or (package["Fails"] and package["Fails"] >= 5) then
+    elseif succ then
         package:FireAllResponses("Success")
         table.remove(Utility.PublishQueue.Queue, 1)
         package:Destroy()
+        print("Removed it")
     end
-    wait(1)
 end)
 
 return module
