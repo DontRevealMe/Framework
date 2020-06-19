@@ -25,7 +25,7 @@ end
     @returns [t:void]
 **--]]
 function Queue:Enqueue(data)
-    table.insert(self.Queue, #self.Queue + 1, data)
+    table.insert(self.Queue, data)
     if #self.Queue == 1 then 
         self.WakeUp:Fire()
     end
@@ -37,7 +37,7 @@ end
     @returns [t:void]
 **--]]
 function Queue:Dequeue(index)
-    table.remove(self.Queue, index or #self.Queue)
+    table.remove(self.Queue, index or 1)
 end
 
 --[[**
