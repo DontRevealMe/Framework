@@ -8,7 +8,7 @@ Package.__index = Package
 function Package:Send(dontReplace)
     Utility.PublishQueue:Enqueue(self)
     if not dontReplace then
-        Utility.CurrentlyBoxing[self.Topic] = Package.new()
+        Utility.CurrentlyBoxing[self.Topic] = Package.new(self.Topic)
     end
 end
 
@@ -17,6 +17,7 @@ function Package:AddPacket(packet, check)
         return false
     end
     table.insert(self.Packets, packet)
+    return true
 end
 
 function Package:GetSize()
@@ -46,6 +47,7 @@ end
 
 function Package.new(topic)
     local self = {}
+    setmetatable(self, Package)
     self.Topic = topic
     self.Packets = {}
     self.Size = Utility:GetSize(self.Packets)
