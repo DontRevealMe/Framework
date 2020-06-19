@@ -11,6 +11,7 @@ local Util = {
     PacketBuffer = {},
     CurrentlyBoxing = {},
     PacketSegments = {},
+    TopicListenerCache = {}
 }
 
 function Util:GetSize(...)
