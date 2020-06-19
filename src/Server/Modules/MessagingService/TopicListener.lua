@@ -21,45 +21,52 @@ local function GetSegment(UID)
     return Utility.PacketSegments[UID]
 end
 
-function TopicListener:_invokeAllCallback(...)
+function TopicListener:_invokeAllCallback(isCompleted, ...)
     for _,callback in pairs(self._callBackTable) do
-        callback(...)
+        if (callback.completeOnly and isCompleted) or not callback.completeOnly then
+            callback.callback(...)
+        end
     end
 end
 
 function TopicListener.new(topic, getIncomplete, callbackFunc)
     if TopicListener._cache[topic] then
         --  Check cache
-        table.insert(TopicListener._cache[topic]._callBackTable, callbackFunc)
+        table.insert(TopicListener._cache[topic]._callBackTable, {
+            completeOnly = not getIncomplete, callback = callbackFunc
+        })
         return TopicListener._cache[topic]
     end
     local self = {}
     setmetatable(self, TopicListener)
-    self.Connection = MessagingService:SubscribeAsync(topic, function(package, timeSent)
-        package = HttpService:JSONDecode(package)
-        print("Delay was " .. tostring(os.time() - timeSent))
-        for _,packet in pairs(package.Packets) do
+    self.Signal = Signal.new()
+    self._callBackTable = {
+        {completeOnly = not getIncomplete, callback = callbackFunc}
+    }
+    self.Connection = MessagingService:SubscribeAsync(topic, function(package)
+        local timeSent = package.Sent
+        package = HttpService:JSONDecode(package.Data)
+        for _,packet in pairs(package) do
             if packet["UID"] then
                 -- Segment packet
-                local segment = Utility.PacketSegments[packet.UID] or {
-                    Packets = {},
-                    Max = nil
-                }
-                local order, max = string.split(packet.Order)
-                order, max = tonumber(order), tonumber(max)
-                table.insert(segment.Packets, packet.Order, packet.Data)
+                local segment = Utility.PacketSegments[packet.UID] or {}
+                local order, max = string.split(packet.Order, "/"), nil
+                order, max = tonumber(order[1]), tonumber(order[2])
+                table.insert(segment, order, packet)
                 Utility.PacketSegments[packet.UID] = segment
-                if #Utility.PacketSegments[packet.UID].Segments==max then
-                    self:_invokeAllCallback(packet.Data, timeSent)
+                if #Utility.PacketSegments[packet.UID]==max then
+                    local buildPacket = ""
+                    for _,pack in pairs(segment) do
+                        buildPacket = buildPacket .. pack.Data
+                    end
+                    self:_invokeAllCallback(true, HttpService:JSONDecode(buildPacket), timeSent)
                 end
             end
             if not packet["UID"] or getIncomplete then
-                self:_invokeAllCallback(packet.Data, timeSent)
+                self:_invokeAllCallback(not packet["UID"], packet.Data, timeSent)
             end
         end
     end)
-    self.Signal = Signal.new()
-    self._callBackTable = {callbackFunc}
     return self
 end
 
