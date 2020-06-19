@@ -14,6 +14,7 @@ TopicListener._cache = {}
 
 function TopicListener:Destroy()
     self._maid:DoCleaning()
+    Utility.TopicListenerCache[self.Topic] = nil
     self = nil
 end
 
@@ -25,15 +26,17 @@ function TopicListener:Connect(getCompleteOnly, callbackFunc)
     end)
 end
 
-function TopicListener.new(topic, getIncomplete)
+function TopicListener.new(topic)
     local self = {}
     setmetatable(self, TopicListener)
+    self.Topic = topic
     self.OnPacketRecivedSignal = Signal.new()
     self._maid = Maid.new()
     self.Connection = MessagingService:SubscribeAsync(topic, function(package)
         local timeSent = package.Sent
         package = HttpService:JSONDecode(package.Data)
         for _,packet in pairs(package) do
+            local builtPacket = ""
             if packet["UID"] then
                 -- Segment packet
                 local segment = Utility.PacketSegments[packet.UID] or {}
@@ -42,21 +45,21 @@ function TopicListener.new(topic, getIncomplete)
                 table.insert(segment, order, packet)
                 Utility.PacketSegments[packet.UID] = segment
                 if #Utility.PacketSegments[packet.UID]==max then
-                    local buildPacket = ""
                     for _,pack in pairs(segment) do
-                        buildPacket = buildPacket .. pack.Data
+                        builtPacket = builtPacket .. pack.Data
                     end
-                    self.OnPacketRecivedSignal:Fire(true, HttpService:JSONDecode(buildPacket), timeSent)
+                    builtPacket = HttpService:JSONDecode(builtPacket)
+                    self.OnPacketRecivedSignal:Fire(true, HttpService:JSONDecode(builtPacket), timeSent)
                 end
             end
-            if not packet["UID"] or getIncomplete then
-                self.OnPacketRecivedSignal:Fire(not packet["UID"], packet.Data, timeSent)
-            end
+            self.OnPacketRecivedSignal:Fire(not packet["UID"] or builtPacket~="", builtPacket~="" or packet.Data, timeSent)
         end
     end)
 
     self._maid:GiveTask(self.Connection)
     self._maid:GiveTask(self.Signal)
+
+    Utility.TopicListenerCache[topic] = self
 
     return self
 end
