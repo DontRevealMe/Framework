@@ -12,15 +12,6 @@ local TopicListener = {}
 TopicListener.__index = TopicListener
 TopicListener._cache = {}
 
-
-function TopicListener:_invokeAllCallback(isCompleted, ...)
-    for _,callback in pairs(self._listeners) do
-        if (callback.completeOnly and isCompleted) or not callback.completeOnly then
-            callback.callback(...)
-        end
-    end
-end
-
 function TopicListener:Destroy()
     self._maid:DoCleaning()
     self = nil
