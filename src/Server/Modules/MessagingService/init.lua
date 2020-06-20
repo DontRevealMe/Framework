@@ -5,6 +5,7 @@ local MessagingService = game:GetService("MessagingService")
 local HttpService = game:GetService("HttpService")
 local require = require(game:GetService("ReplicatedStorage"):WaitForChild("Framework"))
 local Promise = require("Promise")
+local Configuration = require("Settings").MessagingService
 local Utility = require(script:WaitForChild("Util"))
 local Package = require(script:WaitForChild("Package"))
 local Packet = require(script:WaitForChild("Packet"))
@@ -12,8 +13,14 @@ local TopicListener = require(script:WaitForChild("TopicListener"))
 
 local module = {}
 
+
 function module:SendAsync(topic, data, useChannel)
+    topic = (useChannel and "FrameworkChannel" .. Random.new(os.time()):NextInteger(1,Configuration.TotalSubChannels)) or topic
+
     local packet = Packet.new(data, topic)
+    if useChannel then
+        packet.Data.Topic = topic
+    end
     Utility.PacketQueue:Enqueue(packet)
 
     return Promise.async(function(resolve)
@@ -21,9 +28,18 @@ function module:SendAsync(topic, data, useChannel)
     end)
 end
 
-function module:Listen(topic, getComplete, callback)
-    local topicListener = Utility.TopicListenerCache[topic] or TopicListener.new(topic)
-    return topicListener:Connect(getComplete, callback)
+function module:Listen(topic, getComplete, useChannel, callback)
+    if not useChannel then
+        local topicListener = Utility.TopicListenerCache[topic] or TopicListener.new(topic)
+        return topicListener:Connect(getComplete, callback)
+    else
+        print("was I even called")
+        return Utility.SubChannel.OnPackedRecieved.Event:Connect(function(data, timeSent, packet)
+            if packet.Topic == topic and ((getComplete and not packet["UID"] or packet.SegmentCompleted ) or not getComplete) then
+                callback(data, timeSent, packet)
+            end
+        end)
+    end
 end
 
 Utility.PacketQueue:SetUpdater(false, function()
@@ -98,5 +114,16 @@ Utility.PublishQueue:SetUpdater(false, function(package)
         print("Removed it")
     end
 end)
+
+if Configuration.UseSubChannels then
+    for i=1, Configuration.TotalSubChannels do
+        local Channel = TopicListener.new("FrameworkChannel" .. i)
+        table.insert(Utility.SubChannel.Listeners, i, Channel)
+        table.insert(Utility.SubChannel.Connections, i, Channel:Connect(true, function(data, timeSent, packet)
+            Utility.SubChannel.OnPackedRecieved:Fire(data, timeSent, packet)
+            print("Sent it")
+        end))
+    end
+end
 
 return module

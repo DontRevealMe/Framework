@@ -4,6 +4,8 @@
 local HttpService = game:GetService("HttpService")
 local require = require(game:GetService("ReplicatedStorage"):WaitForChild("Framework"))
 local Queue = require("Queue")
+local Signal = require("Signal")
+local Configuration = require("Settings").MessagingService
 
 local Util = {
     PacketQueue = Queue.new(),
@@ -11,7 +13,12 @@ local Util = {
     PacketBuffer = {},
     CurrentlyBoxing = {},
     PacketSegments = {},
-    TopicListenerCache = {}
+    TopicListenerCache = {},
+    SubChannel = {
+        OnPackedRecieved = Configuration.UseSubChannels and Signal.new(),
+        Listeners = {},
+        Connections = {}
+    }
 }
 
 function Util:GetSize(...)
