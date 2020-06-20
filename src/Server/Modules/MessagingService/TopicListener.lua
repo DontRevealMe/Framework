@@ -8,17 +8,17 @@ local Signal = require("Signal")
 local Maid = require("Maid")
 local Utility = require(script.Parent:WaitForChild("Util"))
 
-local TopicListener = {}
-TopicListener.__index = TopicListener
-TopicListener._cache = {}
+local ChannelListener = {}
+ChannelListener.__index = ChannelListener
+ChannelListener._cache = {}
 
-function TopicListener:Destroy()
+function ChannelListener:Destroy()
     self._maid:DoCleaning()
     Utility.TopicListenerCache[self.Topic] = nil
     self = nil
 end
 
-function TopicListener:Connect(getCompleteOnly, callbackFunc)
+function ChannelListener:Connect(getCompleteOnly, callbackFunc)
     return self.OnPacketRecivedSignal.Event:Connect(function(completed, ...)
         if (completed and getCompleteOnly) or not getCompleteOnly then
             callbackFunc(...)
@@ -26,9 +26,9 @@ function TopicListener:Connect(getCompleteOnly, callbackFunc)
     end)
 end
 
-function TopicListener.new(topic)
+function ChannelListener.new(topic)
     local self = {}
-    setmetatable(self, TopicListener)
+    setmetatable(self, ChannelListener)
     self.Topic = topic
     self.OnPacketRecivedSignal = Signal.new()
     self._maid = Maid.new()
@@ -36,7 +36,6 @@ function TopicListener.new(topic)
         local timeSent = package.Sent
         package = HttpService:JSONDecode(package.Data)
         for _,packet in pairs(package) do
-            local builtPacket = ""
             if packet["UID"] then
                 -- Segment packet
                 local segment = Utility.PacketSegments[packet.UID] or {}
@@ -45,14 +44,17 @@ function TopicListener.new(topic)
                 table.insert(segment, order, packet)
                 Utility.PacketSegments[packet.UID] = segment
                 if #Utility.PacketSegments[packet.UID]==max then
+                    local builtPacket = ""
                     for _,pack in pairs(segment) do
                         builtPacket = builtPacket .. pack.Data
                     end
                     builtPacket = HttpService:JSONDecode(builtPacket)
                     self.OnPacketRecivedSignal:Fire(true, HttpService:JSONDecode(builtPacket), timeSent)
+                    packet.Data = builtPacket
+                    packet.SegmentCompleted = true
                 end
             end
-            self.OnPacketRecivedSignal:Fire(not packet["UID"] or builtPacket~="", builtPacket~="" or packet.Data, timeSent)
+            self.OnPacketRecivedSignal:Fire(not packet["UID"] or packet.SegmentCompleted, (packet.SegmentCompleted~="" and packet) or packet, timeSent)
         end
     end)
 
@@ -64,4 +66,4 @@ function TopicListener.new(topic)
     return self
 end
 
-return TopicListener
+return ChannelListener
