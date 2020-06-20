@@ -19,9 +19,9 @@ function ChannelListener:Destroy()
 end
 
 function ChannelListener:Connect(getCompleteOnly, callbackFunc)
-    return self.OnPacketRecivedSignal.Event:Connect(function(completed, ...)
+    return self.OnPacketRecivedSignal.Event:Connect(function(completed, packet, timeStamp)
         if (completed and getCompleteOnly) or not getCompleteOnly then
-            callbackFunc(...)
+            callbackFunc(packet.Data, timeStamp, packet)
         end
     end)
 end
@@ -59,7 +59,7 @@ function ChannelListener.new(topic)
     end)
 
     self._maid:GiveTask(self.Connection)
-    self._maid:GiveTask(self.Signal)
+    self._maid:GiveTask(self.OnPacketRecivedSignal)
 
     Utility.TopicListenerCache[topic] = self
 
