@@ -63,4 +63,17 @@ DESCRIPTION
 
 ```
 
-Same ideas as documenting libraries. If you want to add more, add it after the API section.
+Same ideas as documenting libraries. If you want to add more, add it after the API section ie code examples. Stuff that should appear before the API section should be stuff like limitations, warnings, and etc...
+It's also optional to add more information such as a more detailed section describing each method/function:
+
+```md
+
+### Functions
+
+#### :GetAsync()
+
+| ``table`` :GetAsync(``string`` url) ``[yields]`` |
+|-------------------------------------|
+| Gets the body of the url. |
+
+```
