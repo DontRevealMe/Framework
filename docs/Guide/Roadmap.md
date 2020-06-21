@@ -1,0 +1,29 @@
+# Roadmap
+
+"Planned" roadmap for the Framework. These time frames will most likely either be completed way too soon or completed way too late.
+
+## Soon
+
+This month or next.
+
+- [ ] Overhaul DataStoreService
+- [ ] Overhaul Ambassador
+- [ ] Document major parts of the API
+
+## Near future
+
+2+ months
+
+- [ ] Add support for models including a GitHub actions that will update the models
+- [ ] Look into a more comamnd line like loading method ie ``loader("MessagingService --useChannels")``
+- [ ] A overhaul of the models to add methods such as :Init(), :OnStep(), and etc...
+- [ ] Full documentation of the API including internal API
+- [ ] Add more general purpose modules such as a BanService [Unlikely]
+- [ ] ChatTags library [Unlikely]
+
+## Future
+
+6+ months
+
+- [ ] Anti-exploit that will check for character movement exploits ie fly hacks, speed hacks, tp hacks, and etc...
+- [ ] OOP library [Unlikely]
