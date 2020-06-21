@@ -28,7 +28,7 @@ This repository couldn't be made without the help of:
 
 - [Promise](https://github.com/evaera/roblox-lua-promise)
 - [Signal](https://gist.github.com/Anaminus/afd813efc819bad8e560caea28942010)
-- [t](https://devforum.roblox.com/t/t-a-runtime-type-checker-for-roblox/139769)
+- [t](https://devforum.roblox.com/t/t-a-runtime-type-checker-for-roblox/139769) (Now removed)
 
 ### Inspired from
 
