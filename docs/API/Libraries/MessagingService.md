@@ -16,6 +16,9 @@ This is measured using ``HttpService:JSONEncode()``.
 | Packet size | 800 characters |
 | Package size | 950 characters |
 
+!!! Warning
+    If your packets exceeds the packet size limit, not the data size limit, expect all other packets to be delayed by ``math.ceil(length / 800)`` seconds. Length is calculate by using HttpService:JSONEncode().
+
 ### Properties
 
 None.
@@ -24,17 +27,30 @@ None.
 
 | Function Name | Description | Returns |
 |---------------|-------------|---------|
-| ``RBXScriptConnection`` :SendAsync(``table`` data, ``string`` name ) | Sends a packet to other servers. | ``RBXScriptConnection`` |
-| :ListenAsync() | Listens for a specific topic. | ``TopicListener`` |
+| ``Promise`` :SendAsync(``table`` data, ``string`` name, ``bool`` subChannels=``nil`` ``[optional]``) | Sends data to other servers. | ``RBXScriptConnection`` |
+| ``RBXScriptConnection`` :Listen(``string`` name, ``bool`` getComplete=``true`` ``[optional]``, ``bool`` subChannels=``true`` ``[optional]``, ``Function`` callback) | Listens for a specific channel. | ``TopicListener`` |
 
 ### :SendAsync
 
-| ``void`` :SendAsync(``string`` topic, ``Variant`` data) |
+| ``Promise`` :SendAsync(``table`` data, ``string`` name, ``bool`` subChannels=``false`` ``[optional]``) |
 |----|
-| Sends the given data to other servers in the form of a packet. |
+| Sends data to other servers. ``subChannels`` argument is used to determine whether or not the packet will be sent through a subchannel channel. |
 
-!!! Warning
-    If your packets exceed 800 characters, expect all other packets to be delayed by ``math.ceil(length / 800)``. Length is calculate by using HttpService:JSONEncode().
+### Listen
+
+| ``RBXScriptConnection`` :Listen(``string`` name, ``bool`` getComplete=``true`` ``[optional]``, ``bool`` subChannels=``true`` ``[optional]``, ``Function`` callback) |
+|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Listens for a specfiic channel. ``getComplete`` argument means it will only recieve complete packets and not segment packets. ``subChannels`` argument means whether or not the listener will listen onto subchannels instead of regular channels. Callback will be passed arguments such as ``data``, ``timeSent``, and ``packet``. |
+
+#### Callback arguments
+
+Everytime a packet is sent, the callback function will be passed the following arguments:
+
+| Argument | Description |
+|----------|-------------|
+| ``table`` data | The data of the packet. |
+| ``number`` timeSent | The UNIX time of when the packet was sent. |
+| ``Packet`` packet | The packet itself. It may contain information about the packet's UID, topic, and etc... See [Packet](../../Classes/MessagingService/Packet) for more info |
 
 ## How it works
 

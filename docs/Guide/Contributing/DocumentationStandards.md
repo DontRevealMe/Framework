@@ -12,14 +12,14 @@ This contains everything you'll need for the documentation standards.
 Generally, methods and functions will be documented inside of tables. We try to follow Roblox's standard as much as possible here.
 
 ```md
-``returnType`` :MyFunction(``string`` myArgument, ``expectedArgumentType`` ``[optional]`` myOptionalVariant=``defaultValue``) ``[yields]``
+``returnType`` :MyFunction(``string`` myArgument, ``expectedArgumentType``, ``Variant`` myOptionalVariant=``defaultValue`` ``[optional]``) ``[yields]``
 ```
 
 For example:
 
-``Vector3`` :GetSize(``Instance`` model, ``Variant`` ``[optional]`` myOptional=``3``)
+``Vector3`` :GetSize(``Instance`` model, ``Variant`` myOptional=``3`` ``[optional]``)
 
-``number`` :GetAsync(``string`` scope, ``integer`` ``[optional]`` amount=``4``) ``[yields]``
+``number`` :GetAsync(``string`` scope, ``integer``, ``integer`` amount=``4`` ``[optional]``) ``[yields]``
 
 ## How to document a library
 

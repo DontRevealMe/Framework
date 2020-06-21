@@ -3,6 +3,7 @@ nav:
   - Home: index.md
   - Guide:
     - "Installation Guide": Guide\Installation.md
+    - Roadmap: Guide\Roadmap.md
     - Contributing:
       - "Documentation Standards": Guide\Contributing\DocumentationStandards.md
   - API:
