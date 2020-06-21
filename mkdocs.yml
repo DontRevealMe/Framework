@@ -8,6 +8,10 @@ nav:
   - API:
     - Classes:
       - Queue: API\Classes\Queue.md
+      - MessagingService:
+        - Packet: API\Classes\MessagingService\Packet.md
+        - Package: API\Classes\MessagingService\Packge.md
+        - ChannelListener: API\Classes\MessagingService\ChannelListener.md
     - Libraries:
       - DataStoreService: API\Libraries\DataStoreService.md
       - MessagingService: API\Libraries\MessagingService.md
