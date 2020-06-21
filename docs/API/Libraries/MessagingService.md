@@ -44,18 +44,14 @@ Packets are an internal OOP class which are comprised of properties that contain
 
 ### Packages
 
-Packages contain a group of packets and will be sent automically after a 1 second it has been created. Packages can only contain at most, 850 data in length, but each packet is restricted to 800 characters.
+Packages contain a group of packets and will be sent automically after a 1 second it has been created or they have reached the package size limit.
 
 ### Segments
 
 In the odd case there is a packet larger than 800 characters, the server will attempt to split the packet data up into serveral segments. These segment packets will be sent through.
 The con of this is that it may delay publishes by several seconds which is why it's reccomended that you try to keep data below 800 characters.
 
-### Channels
+### SubChannels
 
-If a value isn't passed in for the ``topic`` argument, the message/listener will use channels. These channels have the bonus of not eating into your subscribe limit, but have a con of less storage due to how they store topic as data.
-On default settings, there are 3 MessagingService channels. Due to each topic having a throttle limit, we split it across 3 channels. Of course, this method is not fool proof but it helps lower the chances of a throttle.
-If you go higher, you may run into the risk of throttling the Subscribe limit which can break MessagingService.
-
-!!! Warning
-    ``FrameworkChannel[NUMBER]`` is reserved. You'll be fine if you use a topic called "FrameworkChannelABC" as it's not using a number at the end, but you really shouldn't be doing that.
+The idea of SubChannel is to reduce the amount of Channels being listened onto. This means you could have 3 SubChannel Channels but have 10 packets firing through 10 channels.
+The cons of a SubChannels is that they may have less capacity vs a normal channel since they also need to store the topic name.
