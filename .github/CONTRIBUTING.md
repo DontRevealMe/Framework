@@ -29,10 +29,16 @@ Please try to follow this naming scheme as best as you can. Generally, we follow
 
 ### Naming scheme
 
-- Methods/Module functions and files will be named like ``SnakeCase``
-- Variables will be named like ``snakeCase``
-- Constants will be named like ``SNAKECASE``
-- We use .new() and not .New()
+| Type | Naming Scheme |
+|------|---------------|
+| Methods | SnakeCase |
+| Functions | SnakeCase |
+| Files | SnakeCase |
+| Variables | snakeCase |
+| Internal methods | _snakeCase |
+| Internal properties | _snakeCase |
+| Constructors | new() / snakeCase |
+| Destructors | Destroy() / SnakeCase |
 
 ### Script heading
 
