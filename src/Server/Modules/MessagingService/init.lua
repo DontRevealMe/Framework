@@ -14,21 +14,20 @@ local ChannelListener = require(script:WaitForChild("ChannelListener"))
 local module = {}
 
 
-function module:SendAsync(name, data, useChannel)
+function module:SendAsync(name, data, subChannels)
     --  Type check + size check
     assert(typeof(name)=="string", string.format('Expected "string" for argument "name", got %s.', typeof(name)))
     assert(typeof(data)=="table", string.format('Expected "table" for argument "data", got %s.', typeof(data)))
-    assert(typeof(useChannel)=="boolean" or typeof(useChannel)=="nil", string.format('Expected "boolean" or "nil" from argument "useChannel", got %s.', typeof(useChannel)))
+    assert(typeof(subChannels)=="boolean" or typeof(subChannels)=="nil", string.format('Expected "boolean" or "nil" from argument "subChannels", got %s.', typeof(useChannel)))
     assert(HttpService:JSONEncode(data):len() <= Configuration.SizeLimits.DataSize,
     string.format("Data has exceeded data size limits. Current limit is: %c. Data size goten was: %c",
         Configuration.SizeLimits.DataSize,
         HttpService:JSONEncode(data):len()
     ))
-    name = (useChannel and "FrameworkChannel" .. Random.new(os.time()):NextInteger(1,Configuration.TotalSubChannels)) or name
-    local packet = Packet.new(data, name)
+    local packet = Packet.new(data, (subChannels and "FrameworkChannel" .. Random.new(os.time()):NextInteger(1,Configuration.TotalSubChannels))  or name)
     --  If it's a subchannel, check if name is under size limits.
-    if useChannel then
-        assert(string.len(name)>=Configuration.SizeLimits.PacketSize - Configuration.SizeLimits.DataSize,
+    if subChannels then
+        assert(string.len(name)<=Configuration.SizeLimits.PacketSize - Configuration.SizeLimits.DataSize,
         string.format("Maximum size for a name is %c. Got name size of %c.",
             Configuration.SizeLimits.PacketSize - Configuration.SizeLimits.DataSize,
             name:len()
@@ -48,7 +47,7 @@ function module:Listen(name, getComplete, useChannel, callback)
         return nameListener:Connect(getComplete, callback)
     else
         return Utility.SubChannel.OnPackedRecieved.Event:Connect(function(data, timeSent, packet)
-            if packet.Nopic == name and ((getComplete and not packet["UID"] or packet.SegmentCompleted ) or not getComplete) then
+            if packet.Name == name and ((getComplete and not packet["UID"] or packet.SegmentCompleted ) or not getComplete) then
                 callback(data, timeSent, packet)
             end
         end)
@@ -112,12 +111,13 @@ Utility.PublishQueue:SetUpdater(false, function(package)
     end)
     if not succ then
         warn(string.format("Failed to send package: %q\n%s", tostring(package.Name), tostring(err)))
-        --  If the package fails 5 or more times, just remove the package and give up.
+        --  If the package fails X or more times, just remove the package and give up.
         package["Fails"] = package["Fails"] or 0
         package.Fails = package.Fails + 1
-        if package.Fails >= 5 then
+        if package.Fails >= Utility.MaxFailedAttempts then
             package:FireAllResponses("Fail")
             table.remove(Utility.PublishQueue.Queue, 1)
+            warn("MessagingService dropped a packet.")
             package:Destroy()
         end
     else
