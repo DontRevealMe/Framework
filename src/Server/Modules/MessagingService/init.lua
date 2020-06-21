@@ -18,7 +18,7 @@ function module:SendAsync(name, data, subChannels)
     --  Type check + size check
     assert(typeof(name)=="string", string.format('Expected "string" for argument "name", got %s.', typeof(name)))
     assert(typeof(data)=="table", string.format('Expected "table" for argument "data", got %s.', typeof(data)))
-    assert(typeof(subChannels)=="boolean" or typeof(subChannels)=="nil", string.format('Expected "boolean" or "nil" from argument "subChannels", got %s.', typeof(useChannel)))
+    assert(typeof(subChannels)=="boolean" or typeof(subChannels)=="nil", string.format('Expected "boolean" or "nil" from argument "subChannels", got %s.', typeof(subChannels)))
     assert(HttpService:JSONEncode(data):len() <= Configuration.SizeLimits.DataSize,
     string.format("Data has exceeded data size limits. Current limit is: %c. Data size goten was: %c",
         Configuration.SizeLimits.DataSize,
