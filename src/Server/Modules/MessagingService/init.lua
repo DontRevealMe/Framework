@@ -15,10 +15,24 @@ local module = {}
 
 
 function module:SendAsync(name, data, useChannel)
+    --  Type check + size check
+    assert(typeof(name)=="string", string.format('Expected "string" for argument "name", got %s.', typeof(name)))
+    assert(typeof(data)=="table", string.format('Expected "table" for argument "data", got %s.', typeof(data)))
+    assert(typeof(useChannel)=="boolean" or typeof(useChannel)=="nil", string.format('Expected "boolean" or "nil" from argument "useChannel", got %s.', typeof(useChannel)))
+    assert(HttpService:JSONEncode(data):len() <= Configuration.SizeLimits.DataSize,
+    string.format("Data has exceeded data size limits. Current limit is: %c. Data size goten was: %c",
+        Configuration.SizeLimits.DataSize,
+        HttpService:JSONEncode(data):len()
+    ))
     name = (useChannel and "FrameworkChannel" .. Random.new(os.time()):NextInteger(1,Configuration.TotalSubChannels)) or name
-
     local packet = Packet.new(data, name)
+    --  If it's a subchannel, check if name is under size limits.
     if useChannel then
+        assert(string.len(name)>=Configuration.SizeLimits.PacketSize - Configuration.SizeLimits.DataSize,
+        string.format("Maximum size for a name is %c. Got name size of %c.",
+            Configuration.SizeLimits.PacketSize - Configuration.SizeLimits.DataSize,
+            name:len()
+        ))
         packet.Data.Name = name
     end
     Utility.PacketQueue:Enqueue(packet)
