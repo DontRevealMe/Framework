@@ -34,3 +34,5 @@ remote_branch: gh-pages
 markdown_extensions:
   - admonition
   - codehilite
+  - pymdownx.tasklist:
+      custom_checkbox: true
