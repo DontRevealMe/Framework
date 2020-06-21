@@ -47,7 +47,7 @@ function Maid:__newindex(index, newTask)
 	if oldTask then
 		if type(oldTask) == "function" then
 			oldTask()
-		elseif typeof(oldTask) == "RBXScriptConnection" or (typeof(task)=="table" and task.Disconnect) then
+		elseif typeof(oldTask) == "RBXScriptConnection" or (typeof(oldTask)=="table" and oldTask.Disconnect) then
 			oldTask:Disconnect()
 		elseif oldTask.Destroy then
 			oldTask:Destroy()
@@ -59,7 +59,7 @@ end
 -- @param task An item to clean
 -- @treturn number taskId
 function Maid:GiveTask(task)
-	assert(task)
+	assert(task, "Assertion failed!")
 	local taskId = #self._tasks+1
 	self[taskId] = task
 

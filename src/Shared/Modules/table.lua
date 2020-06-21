@@ -14,16 +14,16 @@ local module = {}
 function module.deepcopy(...)
     local result = {}
     for _,tab in pairs({...}) do
-        local orig_type = type(orig)
+        local orig_type = type(tab)
         local copy
         if orig_type == 'table' then
             copy = {}
-            for orig_key, orig_value in next, orig, nil do
+            for orig_key, orig_value in next, tab, nil do
                 copy[module.deepcopy(orig_key)] = module.deepcopy(orig_value)
             end
-            setmetatable(copy, module.deepcopy(getmetatable(orig)))
+            setmetatable(copy, module.deepcopy(getmetatable(tab)))
         else -- number, string, boolean, etc
-            copy = orig
+            copy = tab
         end
         table.insert(result, copy)
     end
@@ -40,7 +40,7 @@ function module.merge(t1, t2)
     for i,v in pairs(t2) do 
         t1[i] = v
     end
-    return newTable
+    return t1
 end
 
 --[[**
@@ -50,7 +50,7 @@ end
 **--]]
 function module.keys(dictionary)
     local returnList = {}
-    for i,v in pairs(dictionary) do 
+    for i,_ in pairs(dictionary) do 
         table.insert(returnList, i)
     end
     return returnList
@@ -63,7 +63,7 @@ end
     @retursn [t:Bool] found
 **--]]
 function module.find(t1, search)
-    for i,v in pairs(t1) do
+    for _,v in pairs(t1) do
         if v==search then
             return true
         end
