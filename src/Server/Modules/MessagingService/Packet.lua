@@ -16,10 +16,10 @@ function Packet:Destroy()
     self = nil
 end
 
-function Packet.new(data, topic)
+function Packet.new(data, name)
     local self = {}
     setmetatable(self, Packet)
-    self.Topic = topic
+    self.Name = name
     self.Data = {
         Data = data
     }

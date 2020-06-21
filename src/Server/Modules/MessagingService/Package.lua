@@ -8,7 +8,7 @@ Package.__index = Package
 function Package:Send(dontReplace)
     Utility.PublishQueue:Enqueue(self)
     if not dontReplace then
-        Utility.CurrentlyBoxing[self.Topic] = Package.new(self.Topic)
+        Utility.CurrentlyBoxing[self.Name] = Package.new(self.Name)
     end
 end
 
@@ -39,19 +39,19 @@ function Package:Destroy()
     for _,packet in pairs(self.Packets) do
         packet:Destroy()
     end
-    if Utility.CurrentlyBoxing[self.Topic]==self then
-        Utility.CurrentlyBoxing[self.Topic] = nil
+    if Utility.CurrentlyBoxing[self.Name]==self then
+        Utility.CurrentlyBoxing[self.Name] = nil
     end
     self = nil
 end
 
-function Package.new(topic)
+function Package.new(name)
     local self = {}
     setmetatable(self, Package)
-    self.Topic = topic
+    self.Name = name
     self.Packets = {}
     self.Size = Utility:GetSize(self.Packets)
-    Utility.CurrentlyBoxing[topic] = self
+    Utility.CurrentlyBoxing[name] = self
     return self
 end
 

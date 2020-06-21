@@ -1,4 +1,4 @@
---  Class that manages the listening of a topic
+--  Class that manages the listening of a channel
 --  @author DontRevealme
 
 local MessagingService = game:GetService("MessagingService")
@@ -14,7 +14,7 @@ ChannelListener._cache = {}
 
 function ChannelListener:Destroy()
     self._maid:DoCleaning()
-    Utility.TopicListenerCache[self.Topic] = nil
+    Utility.ChannelListenerCache[self.Name] = nil
     self = nil
 end
 
@@ -26,13 +26,13 @@ function ChannelListener:Connect(getCompleteOnly, callbackFunc)
     end)
 end
 
-function ChannelListener.new(topic)
+function ChannelListener.new(name)
     local self = {}
     setmetatable(self, ChannelListener)
-    self.Topic = topic
+    self.Name = name
     self.OnPacketRecivedSignal = Signal.new()
     self._maid = Maid.new()
-    self.Connection = MessagingService:SubscribeAsync(topic, function(package)
+    self.Connection = MessagingService:SubscribeAsync(name, function(package)
         local timeSent = package.Sent
         package = HttpService:JSONDecode(package.Data)
         for _,packet in pairs(package) do
@@ -61,7 +61,7 @@ function ChannelListener.new(topic)
     self._maid:GiveTask(self.Connection)
     self._maid:GiveTask(self.OnPacketRecivedSignal)
 
-    Utility.TopicListenerCache[topic] = self
+    Utility.ChannelListenerCache[name] = self
 
     return self
 end
