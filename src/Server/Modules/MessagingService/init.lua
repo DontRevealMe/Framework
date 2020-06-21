@@ -41,8 +41,14 @@ function module:SendAsync(name, data, subChannels)
     end)
 end
 
-function module:Listen(name, getComplete, useChannel, callback)
-    if not useChannel then
+function module:Listen(name, getComplete, subChannel, callback)
+    -- Type checking
+    assert(typeof(name)=="string", string.format('Expected "string" for argument "name", got %s', typeof(name)))
+    assert(typeof(getComplete)=="boolean" or typeof(getComplete)=="nil", string.format('Expected "boolean" or "nil" for argument "getComplete", got %s.', typeof(getComplete)))
+    assert(typeof(subChannel)=="boolean" or typeof(getComplete)=="nil", string.format('Expected "boolean" or "nil" for argument "subChannel", got %s.', typeof(subChannel)))
+    assert(typeof(callback)=="function", string.format('Expected "function" for argument "callback", got %s.', typeof(callback)))
+    
+    if not subChannel then
         local nameListener = Utility.ChannelListenerCache[name] or ChannelListener.new(name)
         return nameListener:Connect(getComplete, callback)
     else
