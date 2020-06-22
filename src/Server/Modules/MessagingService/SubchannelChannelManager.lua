@@ -4,7 +4,7 @@
 local require = require(game:GetService("ReplicatedStorage"):WaitForChild("Framework"))
 local Signal = require("Signal")
 local Maid = require("Maid")
-local Utility = require(script.Parent:WaitForChild("Utility"))
+local Utility = require(script.Parent:WaitForChild("Util"))
 local ChannelListener = require(script.Parent:WaitForChild("ChannelListener"))
 
 local SubChannelChannelManager = {}
@@ -20,12 +20,18 @@ function SubChannelChannelManager:Add(amount)
     )
     for i=1, amount do
         i = i + #self.ChannelListeners
-        local listener = ChannelListener.new(self.Name .. i)
-        self._maid:GiveTask(listener)
-        table.insert(self.ChannelListeners, i, listener)
-        table.insert(listener, i, listener:Connect(false, function(...)
-            self.OnPacketRecived:Fire(...)
-        end))
+        local channelListener = ChannelListener.new(self.Name .. i)
+        self._maid:GiveTask(channelListener)
+        table.insert(self.ChannelListeners, i, channelListener)
+        channelListener:Connect(false, function(data, timeSent, packet)
+            if packet["Name"] then
+                for _,listener in pairs(self._listeners) do
+                    if listener.Name == packet.Name and ( (listener.GetComplete and packet.IsCompleted) or not listener.GetComplete ) then
+                        listener.Listener(data, timeSent, packet)
+                    end
+                end
+            end
+        end)
     end
 end
 
@@ -48,7 +54,6 @@ function SubChannelChannelManager:Remove(index, destroy)
     )
     )
     table.remove(self.ChannelListeners, index)
-    table.remove(self._listenerConnections, index)
     if destroy then
         listener:Destroy()
     end
@@ -57,6 +62,24 @@ end
 function SubChannelChannelManager:Destroy()
     self._maid:DoCleaning()
     self = nil
+end
+
+function SubChannelChannelManager:Connect(name, getComplete, listener)
+    local UID = game:GetService("HttpService"):GenerateGUID(false)
+    self._listeners[UID] = {
+        Name = name,
+        Listener = listener,
+        GetComplete = getComplete
+    }
+    print("Added")
+    return setmetatable({IsConnected = true, _parent = self}, {
+        __index = {
+            Disconnect = function()
+                self._parent._listeners[UID] = nil
+                self.IsConnected = false
+            end
+        }
+    })
 end
 
 function SubChannelChannelManager.new(name, useCache)
@@ -77,6 +100,7 @@ function SubChannelChannelManager.new(name, useCache)
     self._maid = Maid.new()
     self._onPacketRecived = Signal.new()
     self.OnPacketRecived = self._onPacketRecived.Event
+    self._listenerFunctions = {}
 
     self._maid:GiveTask(self._onPacketRecived)
 
