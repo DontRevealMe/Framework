@@ -39,7 +39,7 @@ function module:SendAsync(name, data, subChannel)
         typeof(subChannel)
     )
     )
-    
+
     local packet
     if subChannel==nil then
         packet = Packet.new(data, name)
@@ -51,6 +51,14 @@ function module:SendAsync(name, data, subChannel)
         ("Couldn't find SubChannelChannelManager.")
         )
         packet = Packet.new(data, Random.new(os.time()):NextInteger(1, #subChannel.ChannelListeners))
+        packet.Data.Name = name
+        
+        assert(HttpService:JSONEncode(packet.Data):len() >= (Configuration.SizeLimits.PacketSize - Configuration.SizeLimits.DataSize),
+        ("Expected packet size of >850, got a size of %c. Have you tried to shorten the name?"):format(
+            HttpService:JSONEncode(packet.Data):len()
+        )
+        )
+
         Utility.PacketQueue:Enqueue(packet)
     end
 
