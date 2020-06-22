@@ -40,7 +40,7 @@ function ChannelListener.new(name)
         package = HttpService:JSONDecode(package.Data)
         for _,packet in pairs(package) do
             if packet["UID"] then
-                -- Segment packet
+                --  Segment packet
                 local segment = Utility.PacketSegments[packet.UID] or {}
                 local order, max = string.split(packet.Order, "/"), nil
                 order, max = tonumber(order[1]), tonumber(order[2])
