@@ -14,9 +14,9 @@ SubChannelChannelManager.ClassName = "SubChannelChannelManager"
 function SubChannelChannelManager:Add(amount)
     amount = amount or 1
     assert(typeof(amount)=="number", 
-    ('"amount" expected "number", got %s'):format(
-        typeof(amount)
-    )
+        ('"amount" expected "number", got %s'):format(
+            typeof(amount)
+        )
     )
     for i=1, amount do
         i = i + #self.ChannelListeners
@@ -37,21 +37,21 @@ end
 
 function SubChannelChannelManager:Remove(index, destroy)
     assert(typeof(index)=="number", 
-    ('Argument "index" expected "number", got %s'):format(
-        typeof(index)
-    )
+        ('Argument "index" expected "number", got %s'):format(
+            typeof(index)
+        )
     )
     assert(typeof(index)=="boolean" or typeof(index)=="nil",
-    ('Argument "destroy" expected "boolean" or "nil", got %s'):format(
-        typeof(destroy)
-    )
+        ('Argument "destroy" expected "boolean" or "nil", got %s'):format(
+            typeof(destroy)
+        )
     )
     local listener = self.ChannelListeners[index]
     assert(typeof(listener)=="table" and listener.ClassName=="ChannelListener", 
-    ('Expected "ChannelListener" at index %c, got %s'):format(
-        index,
-        typeof(listener)
-    )
+        ('Expected "ChannelListener" at index %c, got %s'):format(
+            index,
+            typeof(listener)
+        )
     )
     table.remove(self.ChannelListeners, index)
     if destroy then
@@ -87,9 +87,9 @@ function SubChannelChannelManager.new(name, useCache)
     end
 
     assert(typeof(name)=="string",
-    ('"name" expected "string", got %s'):format(
-        typeof(name)
-    )
+        ('"name" expected "string", got %s'):format(
+            typeof(name)
+        )
     )
     local self = {}
     setmetatable(self, SubChannelChannelManager)

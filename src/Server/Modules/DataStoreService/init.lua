@@ -64,14 +64,14 @@ end
 
 function DataStoreService:GetBackupAsync(backupNum)
     assert(typeof(backupNum)=="number",
-    ('"backupNum" expected "number", got %s'):format(
-        typeof(backupNum)
-    )
+        ('"backupNum" expected "number", got %s'):format(
+            typeof(backupNum)
+        )
     )
     assert( self.ClassName=="OrderedBackups" or self.ClassName=="OrderedBackupsBackup",
-    (":GetBackupAsync() is a method exclusive to OrderedBackups DataStores or OrderedBackupsBackup DataStores, got %s"):format(
-        self.ClassName
-    )
+        (":GetBackupAsync() is a method exclusive to OrderedBackups DataStores or OrderedBackupsBackup DataStores, got %s"):format(
+            self.ClassName
+        )
     )
     return self.CallingMethod:GetBackup(backupNum):andThen(function(callingMethod, success)
         if success then
@@ -102,25 +102,26 @@ end
 function DataStoreService.new(name, key, callingMethod)
     if DataStoreService._cache[name .. key] then return DataStoreService[name .. key] end
     assert(typeof(name)=="string", 
-    ('"name" expected "string", got %s'):format(
-        typeof(name)
-    )
+        ('"name" expected "string", got %s'):format(
+            typeof(name)
+        )
     )
     assert(typeof(key)=="string",
-    ('"key" expected "string", got %s'):format(
-        typeof(key)
-    )
+        ('"key" expected "string", got %s'):format(
+            typeof(key)
+        )
     )
     assert(typeof(callingMethod)=="string",
-    ('"callingMethod" expected "string", got %s'):format(
-        typeof(callingMethod)
-    )
+        ('"callingMethod" expected "string", got %s'):format(
+            typeof(callingMethod)
+        )
     )
     assert(script:WaitForChild("DataStoreCalling"):FindFirstChild(callingMethod),
-    ("Didn't find a valid DataStore calling method, got %s"):format(
-        callingMethod
+        ("Didn't find a valid DataStore calling method, got %s"):format(
+            callingMethod
+        )
     )
-    )
+
     local self = {}
     setmetatable(self, DataStoreService)
     self.Name = name
