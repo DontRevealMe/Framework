@@ -14,7 +14,6 @@ This month or next.
 
 2+ months
 
-- [ ] Add support for models including a GitHub actions that will update the models
 - [ ] Look into a more comamnd line like loading method ie ``loader("MessagingService --useChannels")``
 - [ ] A overhaul of the models to add methods such as :Init(), :OnStep(), and etc...
 - [ ] Full documentation of the API including internal API
