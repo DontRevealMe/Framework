@@ -19,11 +19,13 @@ function ChannelListener:Destroy()
 end
 
 function ChannelListener:Connect(getCompleteOnly, callbackFunc)
-    return self.OnPacketRecivedSignal.Event:Connect(function(completed, packet, timeStamp)
+    local con = self.OnPacketRecivedSignal.Event:Connect(function(completed, packet, timeStamp)
         if (completed and getCompleteOnly) or not getCompleteOnly then
             callbackFunc(packet.Data, timeStamp, packet)
         end
     end)
+    self._maid:GiveTask(con)
+    return con
 end
 
 function ChannelListener.new(name)
