@@ -20,6 +20,10 @@ This month or next.
 - [ ] Full documentation of the API including internal API
 - [ ] Add more general purpose modules such as a BanService [Unlikely]
 - [ ] ChatTags library [Unlikely]
+- [ ] New installation methods for the framework
+  - [ ] Copy and paste code into Roblox Studio's command line to install the framework
+  - [ ] Auto-update a model
+  - [ ] Auto-updater script
 
 ## Future
 
