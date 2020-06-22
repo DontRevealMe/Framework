@@ -1,11 +1,11 @@
-name: CD
+name: Deploy
 on:
   push:
     branches:
       - master
 
 jobs:
-  build:
+  Docs:
     name: Deploy docs
     runs-on: ubuntu-latest
     steps:
