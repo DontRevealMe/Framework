@@ -5,7 +5,7 @@ return {
     },
     MessagingService = {
         DefaultSubChannels = {
-            Enabled = false; --  If default subchannels should be on
+            Enabled = true; --  If default subchannels should be on
             Amount = 3; --  Amount of default subchannels
         },
         SizeLimits = {
