@@ -8,6 +8,7 @@ local Promise = require("Promise")
 
 local OrderedBackups = {}
 OrderedBackups.__index = OrderedBackups
+OrderedBackups.ClassName = "OrderedBackups"
 
 function OrderedBackups:GetAsync()
     return Promise.async(function(resolve)
@@ -44,6 +45,21 @@ function OrderedBackups:RemoveAsync(key)
         return Promise.async(function(resolve)
             resolve(self.OrderedDataStore:RemoveAsync(key))
         end)
+    end)
+end
+
+function OrderedBackups:GetBackup(key)
+    return Promise.async(function(resolve)
+        resolve(self.DataStore:GetAsync(key))
+    end):andThen(function(data)
+        if data then
+            local newOrderedBackup = OrderedBackups.new(self.Name, self.Key)
+            newOrderedBackup.SavingKey = key
+            newOrderedBackup.ClassName = "OrderedBackupBackup"
+            return newOrderedBackup
+        else
+            return false
+        end
     end)
 end
 
