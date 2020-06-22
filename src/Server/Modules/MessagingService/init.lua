@@ -19,27 +19,32 @@ function module:SendAsync(name, data, subChannel)
     --  Type check + size check
     subChannel = (subChannel=="default" and "FrameworkChannel") or subChannel 
 
-    assert(typeof(name)=="string", ('name" expected "string", got %s.'):format(
-        typeof(name)
-    ))
-    assert(typeof(data)=="table", ('"data" expected "table", got %s.'):format(
-        typeof(data)
-    ))
-    assert(HttpService:JSONEncode(data):len() <= Configuration.SizeLimits.DataSize,
-    ("Data has exceeded data size limits. Current limit is: %c. Data size goten was: %c"):format(
-        Configuration.SizeLimits.DataSize,
-        HttpService:JSONEncode(data):len()
-    ))
-    assert(Utility.Cache.SubChannelChannelManager[subChannel ] or (typeof(subChannel) == "table" and subChannel.ClassName == "SubChannelChannelManager"),
-    ('Expected a SubChannel at %s, got %s.'):format(
-        name,
-        typeof(Utility.Cache.SubChannelChannelManager[name])
+    assert(typeof(name)=="string",
+        ('name" expected "string", got %s.'):format(
+            typeof(name)
+        )
     )
+    assert(typeof(data)=="table",
+        ('"data" expected "table", got %s.'):format(
+            typeof(data)
+        )
+    )
+    assert(HttpService:JSONEncode(data):len() <= Configuration.SizeLimits.DataSize,
+        ("Data has exceeded data size limits. Current limit is: %c. Data size goten was: %c"):format(
+            Configuration.SizeLimits.DataSize,
+            HttpService:JSONEncode(data):len()
+        )
+    )
+    assert(Utility.Cache.SubChannelChannelManager[subChannel ] or (typeof(subChannel) == "table" and subChannel.ClassName == "SubChannelChannelManager"),
+        ('Expected a SubChannel at %s, got %s.'):format(
+            name,
+            typeof(Utility.Cache.SubChannelChannelManager[name])
+        )
     )
     assert((typeof(subChannel)=="table" and subChannel.ClassName=="SubChannelChannelManager") or typeof(subChannel)=="nil" or typeof(subChannel)=="string",
-    ('"subChannel" expected "SubChannelChannelManager" or "nil" or "string", got %s'):format(
-        typeof(subChannel)
-    )
+        ('"subChannel" expected "SubChannelChannelManager" or "nil" or "string", got %s'):format(
+            typeof(subChannel)
+        )
     )
 
     local packet
@@ -50,7 +55,7 @@ function module:SendAsync(name, data, subChannel)
         subChannel = (subChannel=="default" and "FrameworkChannel") or subChannel
         subChannel = (typeof(subChannel)=="string" and Utility.Cache.SubChannelChannelManager[subChannel]) or subChannel 
         assert(typeof(subChannel)=="table" and subChannel.ClassName=="SubChannelChannelManager",
-        ("Couldn't find SubChannelChannelManager.")
+            ("Couldn't find SubChannelChannelManager.")
         )
         packet = Packet.new(data, subChannel.Name .. Random.new(os.time()):NextInteger(1, #subChannel.ChannelListeners))
         packet.Data.Name = name
