@@ -39,6 +39,7 @@ function module:SendAsync(name, data, subChannel)
         typeof(subChannel)
     )
     )
+    
     local packet
     if subChannel==nil then
         packet = Packet.new(data, name)
