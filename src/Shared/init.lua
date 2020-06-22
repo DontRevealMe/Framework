@@ -128,7 +128,7 @@ return function(library)
                 local function getModulesRecursion(parent)
                     for name,child in pairs(parent.Children) do
                         if child.Self.ClassName=="ModuleScript" then
-                            newCompiled[name] = child
+                            newCompiled[child.Self.Name] = child
                         end
                         if len(child.Children)>0 then
                             getModulesRecursion(child)
@@ -138,6 +138,7 @@ return function(library)
                 for _,v in pairs(compiled) do 
                     getModulesRecursion(v)
                 end
+                compiled = nil
                 compiled = newCompiled
             end
             return compiled
