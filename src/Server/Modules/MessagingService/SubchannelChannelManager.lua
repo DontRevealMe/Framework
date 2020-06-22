@@ -4,6 +4,7 @@
 local require = require(game:GetService("ReplicatedStorage"):WaitForChild("Framework"))
 local Signal = require("Signal")
 local Maid = require("Maid")
+local Utility = require(script.Parent:WaitForChild("Utility"))
 local ChannelListener = require(script.Parent:WaitForChild("ChannelListener"))
 
 local SubChannelChannelManager = {}
@@ -57,7 +58,11 @@ function SubChannelChannelManager:Destroy()
     self = nil
 end
 
-function SubChannelChannelManager.new(name)
+function SubChannelChannelManager.new(name, useCache)
+    if useCache and Utility.Cache.SubChannelChannelManager[name] then
+        return Utility.Cache.SubChannelChannelManager[name]
+    end
+
     assert(typeof(name)=="string",
     ('"name" expected "string", got %s'):format(
         typeof(name)
@@ -73,6 +78,10 @@ function SubChannelChannelManager.new(name)
     self.OnPacketRecived = self._onPacketRecived.Event
 
     self._maid:GiveTask(self._onPacketRecived)
+
+    if useCache then
+        Utility.Cache.SubChannelChannelManager[name] = self
+    end
 
     return self
 end
