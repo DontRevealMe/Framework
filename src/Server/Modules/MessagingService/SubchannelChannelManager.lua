@@ -9,6 +9,7 @@ local ChannelListener = require(script.Parent:WaitForChild("ChannelListener"))
 
 local SubChannelChannelManager = {}
 SubChannelChannelManager.__index = SubChannelChannelManager
+SubChannelChannelManager.ClassName = "SubChannelChannelManager"
 
 function SubChannelChannelManager:Add(amount)
     amount = amount or 1
