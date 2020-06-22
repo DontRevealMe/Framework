@@ -9,10 +9,10 @@ This contains everything you'll need for the documentation standards.
 
 ## Documenting a method/function
 
-Generally, methods and functions will be documented inside of tables. We try to follow Roblox's standard as much as possible here.
+Generally, methods and functions will be documented inside of tables. We try to follow Roblox's standard as much as possible here. Any extra info on the argument should be placed after it.
 
 ```md
-``returnType`` :MyFunction(``string`` myArgument, ``expectedArgumentType``, ``Variant`` myOptionalVariant=``defaultValue`` ``[optional]``) ``[yields]``
+``returnType`` :MyFunction(``string`` myArgument, ``Variant`` myOptionalVariant=``defaultValue`` ``[optional]``) ``[yields]``
 ```
 
 For example:
@@ -34,11 +34,11 @@ DESCRIPTION
 
 | Property Name | Description |
 |---------------|-------------|
-| ... | ... |
+| ``type`` myName ``[internal]`` | ... |
 
 | Function Name | Description | Returns |
 |---------------|-------------|---------|
-| ... | ... | ... |
+| ``returnType`` myFunction(...) ``[internal]`` ``[optional]`` | ... | If you have more information on the return type, put it here. |
 
 ```
 
