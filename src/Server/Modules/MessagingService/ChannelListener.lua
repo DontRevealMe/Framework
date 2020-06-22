@@ -14,7 +14,7 @@ ChannelListener._cache = {}
 
 function ChannelListener:Destroy()
     self._maid:DoCleaning()
-    Utility.ChannelListenerCache[self.Name] = nil
+    Utility.Cache.ChannelListener[self.Name] = nil
     self = nil
 end
 
@@ -61,7 +61,7 @@ function ChannelListener.new(name)
     self._maid:GiveTask(self.Connection)
     self._maid:GiveTask(self.OnPacketRecivedSignal)
 
-    Utility.ChannelListenerCache[name] = self
+    Utility.Cache.ChannelListener[name] = self
 
     return self
 end

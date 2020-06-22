@@ -49,7 +49,7 @@ function module:Listen(name, getComplete, subChannel, callback)
     assert(typeof(callback)=="function", string.format('Expected "function" for argument "callback", got %s.', typeof(callback)))
     
     if not subChannel then
-        local nameListener = Utility.ChannelListenerCache[name] or ChannelListener.new(name)
+        local nameListener = Utility.Cache.ChannelListener[name] or ChannelListener.new(name)
         return nameListener:Connect(getComplete, callback)
     else
         return Utility.SubChannel.OnPackedRecieved.Event:Connect(function(data, timeSent, packet)

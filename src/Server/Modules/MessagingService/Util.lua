@@ -13,11 +13,14 @@ local Util = {
     PacketBuffer = {},
     CurrentlyBoxing = {},
     PacketSegments = {},
-    ChannelListenerCache = {},
     SubChannel = {
         OnPackedRecieved = Configuration.UseSubChannels and Signal.new(),
         Listeners = {},
         Connections = {}
+    }
+    Cache = {
+        ChannelListener = {},
+        SubChannelChannelManager = {}
     }
 }
 
