@@ -4,6 +4,7 @@ local Utility = require(script.Parent:WaitForChild("Util"))
 
 local Package = {}
 Package.__index = Package
+Package.ClassName = "Package"
 
 function Package:Send(dontReplace)
     Utility.PublishQueue:Enqueue(self)

@@ -6,6 +6,7 @@ local Signal = require("Signal")
 local Utility = require(script.Parent:WaitForChild("Util"))
 local Packet = {}
 Packet.__index = Packet
+Packet.ClassName = "Packet"
 
 function Packet:GetSize()
     return Utility:GetSize(self.Data)

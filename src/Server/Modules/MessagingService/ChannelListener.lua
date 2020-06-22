@@ -10,6 +10,7 @@ local Utility = require(script.Parent:WaitForChild("Util"))
 
 local ChannelListener = {}
 ChannelListener.__index = ChannelListener
+ChannelListener.ClassName = "ChannelListener"
 ChannelListener._cache = {}
 
 function ChannelListener:Destroy()
