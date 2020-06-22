@@ -29,8 +29,7 @@ function DataStoreService:PullAsync(key, defaultValue)
                     if not compare[i] then
                         compare[i] = v
                         hadToReplace = true
-                    end
-                    if typeof(v)=="table" then
+                    elseif typeof(v)=="table" then
                         recursiveCompare(v, compare[i])
                     end
                 end
@@ -39,10 +38,11 @@ function DataStoreService:PullAsync(key, defaultValue)
             --  Compare values
             if not data then
                 self.Value = defaultValue
+                return self.Value
             else
                 local comparedData, replaced = recursiveCompare(defaultValue, data)
                 self.Value = comparedData
-                return replaced
+                return self.Value, replaced
             end
         else
             self.Value = data
@@ -51,8 +51,8 @@ function DataStoreService:PullAsync(key, defaultValue)
 end
 
 function DataStoreService:GetBackupAsync(backupNum)
-    assert(self.ClassName=="OrderedBackup",
-    (":GetBackupAsync() is a method exclusive to OrderedBackup DataStores or OrderedBackupBackup DataStores, got %s"):foramt(
+    assert(self.ClassName=="OrderedBackups" or self.ClassName=="OrderedBackupsBackup",
+    (":GetBackupAsync() is a method exclusive to OrderedBackups DataStores or OrderedBackupsBackup DataStores, got %s"):format(
         self.ClassName
     )
     )
