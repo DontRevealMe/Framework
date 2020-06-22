@@ -5,6 +5,22 @@ local require = require(game:GetService("ReplicatedStorage"):WaitForChild("Frame
 local DataStoreService = game:GetService("DataStoreService")
 local Promise = require("Promise")
 
+local OrderedBackupBackup = {}
+OrderedBackupBackup.__index = OrderedBackupBackup
+OrderedBackupBackup.ClassName = "OrderdBackupBackup"
+
+function OrderedBackupBackup:SetAsync(data, transform)
+    data = (transform~=nil and transform()) or data
+    return Promise.async(function(resolve)
+        resolve(self.DataStore:UpdateAsync(function()
+            return data
+        end))
+    end)
+end
+
+OrderedBackupBackup.UpdateAsync = OrderedBackupBackup.SetAsync
+
+
 
 local OrderedBackups = {}
 OrderedBackups.__index = OrderedBackups
@@ -58,11 +74,20 @@ function OrderedBackups:RemoveAsync(key)
 end
 
 function OrderedBackups:GetBackup(key)
+    assert(tonumber(key) < tonumber(self.SavingKey),
+    ("Backup key must be under %c, got key of %c."):format(
+        self.SavingKey,
+        key
+    )
+    )
     return Promise.async(function(resolve)
         resolve(self.DataStore:GetAsync(key))
     end):andThen(function(data)
         if data then
             local newOrderedBackup = OrderedBackups.new(self.Name, self.Key)
+            newOrderedBackup.SetAsync = nil
+            newOrderedBackup.UpdateAsync = nil
+            setmetatable(newOrderedBackup, OrderedBackupBackup)
             newOrderedBackup.SavingKey = key
             newOrderedBackup.ClassName = "OrderedBackupBackup"
             return newOrderedBackup, true
