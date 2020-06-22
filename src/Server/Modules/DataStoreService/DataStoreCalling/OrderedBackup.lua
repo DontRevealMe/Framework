@@ -27,7 +27,8 @@ end
 
 OrderedBackups.UpdateAsync = OrderedBackups.GetAsync
 
-function OrderedBackups:SetAsync(data)
+function OrderedBackups:SetAsync(data, transform)
+    data = (transform~=nil and transform()) or data
     self.SavingKey = self.SavingKey + 1
     return Promise.async(function(resolve)
         resolve(self.DataStore:SetAsync(self.SavingKey, data))
