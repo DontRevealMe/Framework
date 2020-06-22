@@ -15,16 +15,13 @@ local SubChannelChannelManager = require(script:WaitForChild("SubChannelChannelM
 local module = {}
 
 
-function module:SendAsync(name, data, useSubChannel, subChannel)
+function module:SendAsync(name, data, subChannel)
     --  Type check + size check
     assert(typeof(name)=="string", ('name" expected "string", got %s.'):format(
         typeof(name)
     ))
     assert(typeof(data)=="table", ('"data" expected "table", got %s.'):format(
         typeof(data)
-    ))
-    assert(typeof(useSubChannel)=="boolean" or typeof(useSubChannel)=="nil", ('"useSubChannel" expected "boolean" or "nil", got %s.'):format(
-        typeof(useSubChannel)
     ))
     assert(HttpService:JSONEncode(data):len() <= Configuration.SizeLimits.DataSize,
     ("Data has exceeded data size limits. Current limit is: %c. Data size goten was: %c"):format(
@@ -42,26 +39,22 @@ function module:SendAsync(name, data, useSubChannel, subChannel)
         typeof(subChannel)
     )
     )
-    subChannel = useSubChannel and ((typeof(subChannel)=="table" and subChannel) or (typeof(subChannel)=="string" and Utility.Cache.SubChannelChannelManager[subChannel]))
-    if not subChannel then
-        error(("Couldn't find a SubChannelChannelManager at %s"):format(
-            subChannel
-        ))
+    local packet
+    if subChannel==nil then
+        packet = Packet.new(data, name)
+        Utility.PacketQueue:Enqueue(packet)
+    else
+        subChannel = (subChannel=="default" and "FrameworkChannel") or subChannel
+        subChannel = (typeof(subChannel)=="string" and Utility.Cache.SubChannelChannelManager[subChannel]) or subChannel 
+        assert(typeof(subChannel)=="table" and subChannel.ClassName=="SubChannelChannelManager",
+        ("Couldn't find SubChannelChannelManager.")
+        )
+        packet = Packet.new(data, Random.new(os.time()):NextInteger(1, #subChannel.ChannelListeners))
+        Utility.PacketQueue:Enqueue(packet)
     end
-    local packet = Packet.new(data, (useSubChannel and subChannel.Name .. Random.new(os.time()):NextInteger(1, #subChannel.ChannelListeners)) or name)
-    --  If it's a subchannel, check if name is under size limits.
-    if useSubChannel then
-        assert(string.len(name)<=Configuration.SizeLimits.PacketSize - Configuration.SizeLimits.DataSize,
-        string.format("Maximum size for a name is %c. Got name size of %c.",
-            Configuration.SizeLimits.PacketSize - Configuration.SizeLimits.DataSize,
-            name:len()
-        ))
-        packet.Data.Name = name
-    end
-    Utility.PacketQueue:Enqueue(packet)
 
     return Promise.async(function(resolve)
-        resolve(packet.Response:Wait())
+        resolve(packet.Response.Event:Wait())
     end)
 end
 
