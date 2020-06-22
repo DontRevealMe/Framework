@@ -17,10 +17,10 @@ function OrderedBackups:GetAsync()
         if key then
             self.SavingKey = key.value
             return Promise.async(function(resolve)
-                resolve(self.DataStore:GetAsync(key.value))
+                resolve(self.DataStore:GetAsync(key.value)), true
             end)
         else
-            return false
+            return nil, false
         end
     end)
 end
@@ -57,9 +57,9 @@ function OrderedBackups:GetBackup(key)
             local newOrderedBackup = OrderedBackups.new(self.Name, self.Key)
             newOrderedBackup.SavingKey = key
             newOrderedBackup.ClassName = "OrderedBackupBackup"
-            return newOrderedBackup
+            return newOrderedBackup, true
         else
-            return false
+            return nil, false
         end
     end)
 end
