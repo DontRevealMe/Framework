@@ -42,13 +42,13 @@ function module:SendAsync(name, data, useSubChannel, subChannel)
         typeof(subChannel)
     )
     )
-    subChannel = (typeof(subChannel)=="table" and subChannel) or (typeof(subChannel)=="string" and Utility.Cache.SubChannelChannelManager[subChannel])
+    subChannel = useSubChannel and ((typeof(subChannel)=="table" and subChannel) or (typeof(subChannel)=="string" and Utility.Cache.SubChannelChannelManager[subChannel]))
     if not subChannel then
         error(("Couldn't find a SubChannelChannelManager at %s"):format(
             subChannel
         ))
     end
-    local packet = Packet.new(data, (useSubChannel and "FrameworkChannel" .. Random.new(os.time()):NextInteger(1,Configuration.TotalSubChannels)) or name)
+    local packet = Packet.new(data, (useSubChannel and subChannel.Name .. Random.new(os.time()):NextInteger(1, #subChannel.ChannelListeners)) or name)
     --  If it's a subchannel, check if name is under size limits.
     if useSubChannel then
         assert(string.len(name)<=Configuration.SizeLimits.PacketSize - Configuration.SizeLimits.DataSize,
