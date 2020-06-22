@@ -14,8 +14,39 @@ DataStoreService.__index = DataStoreService
 DataStoreService.ClassName = "DataStore"
 
 function DataStoreService:FlushData()
-    return self.DataStoreCaller:UpdateAsync(self.Key, function()
-        return self.BufferData
+    return self.CallingMethod:UpdateAsync(self.Key, function()
+        return self.Value
+    end)
+end
+
+function DataStoreService:PullData(key, defaultValue)
+    key = (self.ClassName=="OrderedBackups" and defaultValue) or key
+    return self.CallingMethod:GetAsync(self.Key or key):andThen(function(data)
+        if not data then
+            local function recursiveCompare(parent, compare)
+                local hadToReplace = false
+                for i,v in pairs(parent) do
+                    if not compare[i] then
+                        compare[i] = v
+                        hadToReplace = true
+                    end
+                    if typeof(v)=="table" then
+                        recursiveCompare(v, compare[i])
+                    end
+                end
+                return compare, hadToReplace
+            end
+            --  Compare values
+            if not data then
+                self.Value = defaultValue
+            else
+                local comparedData, replaced = recursiveCompare(defaultValue, data)
+                self.Value = comparedData
+                return replaced
+            end
+        else
+            self.Value = data
+        end
     end)
 end
 
@@ -45,9 +76,9 @@ function DataStoreService.new(name, key, callingMethod)
     setmetatable(self, DataStoreService)
     self.Name = name
     self.Key = key
-    self.CallingMethod = self.CallingMethod
-    self.DataStoreCaller = require(script:WaitForChild("DataStoreCalling"):FindFirstChild(callingMethod)).new(name, key)
-    self.BufferData = nil
+    self.ClassName = callingMethod
+    self.CallingMethod = require(script:WaitForChild("DataStoreCalling"):FindFirstChild(callingMethod)).new(name, key)
+    self.Value = nil
 
     DataStoreService._cache[name .. key] = self
 
