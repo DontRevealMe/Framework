@@ -5,11 +5,12 @@ local MessagingService = game:GetService("MessagingService")
 local HttpService = game:GetService("HttpService")
 local require = require(game:GetService("ReplicatedStorage"):WaitForChild("Framework"))
 local Promise = require("Promise")
-local Configuration = require("Settings").MessagingService
+local Configuration = require("Server.Settings").MessagingService
 local Utility = require(script:WaitForChild("Util"))
 local Package = require(script:WaitForChild("Package"))
 local Packet = require(script:WaitForChild("Packet"))
 local ChannelListener = require(script:WaitForChild("ChannelListener"))
+local SubChannelChannelManager = require(script:WaitForChild("SubChannelChannelManager"))
 
 local module = {}
 
@@ -49,7 +50,7 @@ function module:Listen(name, getComplete, subChannel, callback)
     assert(typeof(callback)=="function", string.format('"callback" expected "function", got %s.', typeof(callback)))
     
     if not subChannel then
-        local nameListener = Utility.Cache.ChannelListener[name] or ChannelListener.new(name)
+        local nameListener = Utility.Cache.ChannelListener[name] or ChannelListener.new(name, true)
         return nameListener:Connect(getComplete, callback)
     else
         return Utility.SubChannel.OnPackedRecieved.Event:Connect(function(data, timeSent, packet)
@@ -135,14 +136,9 @@ end)
 
 -- Subchannels
 
-if Configuration.UseSubChannels then
-    for i=1, Configuration.TotalSubChannels do
-        local Channel = ChannelListener.new("FrameworkChannel" .. i)
-        table.insert(Utility.SubChannel.Listeners, i, Channel)
-        table.insert(Utility.SubChannel.Connections, i, Channel:Connect(true, function(data, timeSent, packet)
-            Utility.SubChannel.OnPackedRecieved:Fire(data, timeSent, packet)
-        end))
-    end
+if Configuration.DefaultSubChannels then
+    local sccm = SubChannelChannelManager.new("FrameworkChannel", true)
+
 end
 
 return module
