@@ -33,7 +33,7 @@ function OrderedBackups:GetAsync()
         if key then
             self.SavingKey = key.value
             return Promise.async(function(resolve)
-                resolve(self.DataStore:GetAsync(key.value)), true
+                resolve(self.DataStore:GetAsync(key.value), true)
             end)
         else
             return nil, false
@@ -45,7 +45,7 @@ OrderedBackups.UpdateAsync = OrderedBackups.GetAsync
 
 function OrderedBackups:SetAsync(data, transform)
     data = (transform~=nil and transform()) or data
-    self.SavingKey = self.SavingKey + 1
+    self.SavingKey = (self.SavingKey or 0) + 1
     return Promise.async(function(resolve)
         resolve(self.DataStore:SetAsync(self.SavingKey, data))
     end):andThen(function()
