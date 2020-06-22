@@ -58,10 +58,14 @@ function ChannelListener.new(name, useCache)
                     builtPacket = HttpService:JSONDecode(builtPacket)
                     self.OnPacketRecivedSignal:Fire(true, HttpService:JSONDecode(builtPacket), timeSent)
                     packet.Data = builtPacket
-                    packet.SegmentCompleted = true
+                    packet.IsCompleted = true
+                else
+                    packet.IsCompleted = false
                 end
+            else
+                packet.IsCompleted = true
             end
-            self.OnPacketRecivedSignal:Fire(not packet["UID"] or packet.SegmentCompleted, (packet.SegmentCompleted~="" and packet) or packet, timeSent)
+            self.OnPacketRecivedSignal:Fire(not packet["UID"] or packet.IsCompleted, packet, timeSent)
         end
     end)
 
