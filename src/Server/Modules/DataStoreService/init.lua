@@ -13,13 +13,13 @@ DataStoreService._cache = {}
 DataStoreService.__index = DataStoreService
 DataStoreService.ClassName = "DataStore"
 
-function DataStoreService:FlushData()
+function DataStoreService:FlushAsync()
     return self.CallingMethod:UpdateAsync(self.Key, function()
         return self.Value
     end)
 end
 
-function DataStoreService:PullData(key, defaultValue)
+function DataStoreService:PullAsync(key, defaultValue)
     key = (self.ClassName=="OrderedBackups" and defaultValue) or key
     return self.CallingMethod:GetAsync(self.Key or key):andThen(function(data)
         if not data then
@@ -46,6 +46,22 @@ function DataStoreService:PullData(key, defaultValue)
             end
         else
             self.Value = data
+        end
+    end)
+end
+
+function DataStoreService:GetBackupAsync(backupNum)
+    assert(self.ClassName=="OrderedBackup",
+    (":GetBackupAsync() is a method exclusive to OrderedBackup DataStores or OrderedBackupBackup DataStores, got %s"):foramt(
+        self.ClassName
+    )
+    )
+    return self.CallingMethod:GetBackup(backupNum):andThen(function(callingMethod, success)
+        if success then
+            local newDS = DataStoreService.new(self.Name, self.Key, self.ClassName)
+            newDS.ClassName = "OrderedBackupBackup"
+            newDS.CalllingMethod = nil
+            newDS.CallingMethod = callingMethod
         end
     end)
 end
