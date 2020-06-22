@@ -15,19 +15,36 @@ local SubChannelChannelManager = require(script:WaitForChild("SubChannelChannelM
 local module = {}
 
 
-function module:SendAsync(name, data, subChannels)
+function module:SendAsync(name, data, useSubChannel, subChannel)
     --  Type check + size check
-    assert(typeof(name)=="string", string.format('name" expected "string", got %s.', typeof(name)))
-    assert(typeof(data)=="table", string.format('"data" expected "table", got %s.', typeof(data)))
-    assert(typeof(subChannels)=="boolean" or typeof(subChannels)=="nil", string.format('"subChannels" expected "boolean" or "nil", got %s.', typeof(subChannels)))
+    assert(typeof(name)=="string", ('name" expected "string", got %s.'):format(
+        typeof(name)
+    ))
+    assert(typeof(data)=="table", ('"data" expected "table", got %s.'):format(
+        typeof(data)
+    ))
+    assert(typeof(useSubChannel)=="boolean" or typeof(useSubChannel)=="nil", ('"useSubChannel" expected "boolean" or "nil", got %s.'):format(
+        typeof(useSubChannel)
+    ))
     assert(HttpService:JSONEncode(data):len() <= Configuration.SizeLimits.DataSize,
-    string.format("Data has exceeded data size limits. Current limit is: %c. Data size goten was: %c",
+    ("Data has exceeded data size limits. Current limit is: %c. Data size goten was: %c"):format(
         Configuration.SizeLimits.DataSize,
         HttpService:JSONEncode(data):len()
     ))
-    local packet = Packet.new(data, (subChannels and "FrameworkChannel" .. Random.new(os.time()):NextInteger(1,Configuration.TotalSubChannels))  or name)
+    assert(Utility.Cache.SubChannelChannelManager[name] or (typeof(subChannel) == "table" and subChannel.ClassName == "SubChannelChannelManager"),
+    ('Expected a SubChannel at %s, got %s.'):format(
+        name,
+        typeof(Utility.Cache.SubChannelChannelManager[name])
+    )
+    )
+    assert((typeof(subChannel)=="table" and subChannel.ClassName=="SubChannelChannelManager") or typeof(subChannel)=="nil",
+    ('"subChannel" expected "SubChannelChannelManager" or "nil", got %s'):format(
+        typeof(subChannel)
+    )
+    )
+    local packet = Packet.new(data, (useSubChannel and "FrameworkChannel" .. Random.new(os.time()):NextInteger(1,Configuration.TotalSubChannels))  or name)
     --  If it's a subchannel, check if name is under size limits.
-    if subChannels then
+    if useSubChannel then
         assert(string.len(name)<=Configuration.SizeLimits.PacketSize - Configuration.SizeLimits.DataSize,
         string.format("Maximum size for a name is %c. Got name size of %c.",
             Configuration.SizeLimits.PacketSize - Configuration.SizeLimits.DataSize,
@@ -136,9 +153,8 @@ end)
 
 -- Subchannels
 
-if Configuration.DefaultSubChannels then
-    local sccm = SubChannelChannelManager.new("FrameworkChannel", true)
-
+if Configuration.DefaultSubChannels.Enabled then
+    SubChannelChannelManager.new("FrameworkChannel", true):Add(Configuration.DefaultSubChannels.Amount)
 end
 
 return module
