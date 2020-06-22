@@ -15,7 +15,7 @@ This month or next.
 2+ months
 
 - [ ] Look into a more comamnd line like loading method ie ``loader("MessagingService --useChannels")``
-- [ ] A overhaul of the models to add methods such as :Init(), :OnStep(), and etc...
+- [ ] A overhaul of the modules to add methods such as :Init(), :OnStep(), and etc...
 - [ ] Full documentation of the API including internal API
 - [ ] Add more general purpose modules such as a BanService [Unlikely]
 - [ ] ChatTags library [Unlikely]
