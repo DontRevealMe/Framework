@@ -39,6 +39,14 @@ function OrderedBackups:SetAsync(data, transform)
     end)
 end
 
+function OrderedBackups:OverwriteBackup(backupNum, data)
+    return Promise.async(function(resolve)
+        resolve(self.DataStore:UpdateAsync(backupNum, function()
+            return data
+        end))
+    end)
+end
+
 function OrderedBackups:RemoveAsync(key)
     return Promise.async(function(resolve)
         resolve(self.DataStore:RemoveAsync(key))
