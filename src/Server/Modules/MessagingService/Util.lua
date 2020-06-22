@@ -17,7 +17,7 @@ local Util = {
         OnPackedRecieved = Configuration.UseSubChannels and Signal.new(),
         Listeners = {},
         Connections = {}
-    }
+    },
     Cache = {
         ChannelListener = {},
         SubChannelChannelManager = {}
