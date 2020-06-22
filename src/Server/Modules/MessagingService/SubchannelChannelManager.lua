@@ -71,7 +71,6 @@ function SubChannelChannelManager:Connect(name, getComplete, listener)
         Listener = listener,
         GetComplete = getComplete
     }
-    print("Added")
     return setmetatable({IsConnected = true, _parent = self}, {
         __index = {
             Disconnect = function()

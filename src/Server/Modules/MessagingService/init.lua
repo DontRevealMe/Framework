@@ -5,7 +5,7 @@ local MessagingService = game:GetService("MessagingService")
 local HttpService = game:GetService("HttpService")
 local require = require(game:GetService("ReplicatedStorage"):WaitForChild("Framework"))
 local Promise = require("Promise")
-local Configuration = require("Server.Settings").MessagingService
+local Configuration = require("Server.Modules.Settings").MessagingService
 local Utility = require(script:WaitForChild("Util"))
 local Package = require(script:WaitForChild("Package"))
 local Packet = require(script:WaitForChild("Packet"))
@@ -17,6 +17,8 @@ local module = {}
 
 function module:SendAsync(name, data, subChannel)
     --  Type check + size check
+    subChannel = (subChannel=="default" and "FrameworkChannel") or subChannel 
+
     assert(typeof(name)=="string", ('name" expected "string", got %s.'):format(
         typeof(name)
     ))
@@ -28,7 +30,7 @@ function module:SendAsync(name, data, subChannel)
         Configuration.SizeLimits.DataSize,
         HttpService:JSONEncode(data):len()
     ))
-    assert(Utility.Cache.SubChannelChannelManager[name] or (typeof(subChannel) == "table" and subChannel.ClassName == "SubChannelChannelManager"),
+    assert(Utility.Cache.SubChannelChannelManager[subChannel ] or (typeof(subChannel) == "table" and subChannel.ClassName == "SubChannelChannelManager"),
     ('Expected a SubChannel at %s, got %s.'):format(
         name,
         typeof(Utility.Cache.SubChannelChannelManager[name])
@@ -50,20 +52,20 @@ function module:SendAsync(name, data, subChannel)
         assert(typeof(subChannel)=="table" and subChannel.ClassName=="SubChannelChannelManager",
         ("Couldn't find SubChannelChannelManager.")
         )
-        packet = Packet.new(data, Random.new(os.time()):NextInteger(1, #subChannel.ChannelListeners))
+        packet = Packet.new(data, subChannel.Name .. Random.new(os.time()):NextInteger(1, #subChannel.ChannelListeners))
         packet.Data.Name = name
         
-        assert(HttpService:JSONEncode(packet.Data):len() >= (Configuration.SizeLimits.PacketSize - Configuration.SizeLimits.DataSize),
-        ("Expected packet size of >850, got a size of %c. Have you tried to shorten the name?"):format(
-            HttpService:JSONEncode(packet.Data):len()
-        )
+        assert(HttpService:JSONEncode(packet.Data):len() <= (Configuration.SizeLimits.PacketSize - Configuration.SizeLimits.DataSize),
+            ("Expected packet size of <850, got a size of %c. Have you tried to shorten the name?"):format(
+                HttpService:JSONEncode(packet.Data):len()
+            )
         )
 
         Utility.PacketQueue:Enqueue(packet)
     end
 
     return Promise.async(function(resolve)
-        resolve(packet.Response.Event:Wait())
+        resolve(packet.Response:Wait())
     end)
 end
 
@@ -71,18 +73,19 @@ function module:Listen(name, getComplete, subChannel, callback)
     -- Type checking
     assert(typeof(name)=="string", string.format('"name" expected "string", got %s', typeof(name)))
     assert(typeof(getComplete)=="boolean" or typeof(getComplete)=="nil", string.format('"getComplete" expected "boolean" or "nil", got %s.', typeof(getComplete)))
-    assert(typeof(subChannel)=="boolean" or typeof(getComplete)=="nil", string.format('"subChannel" expected "boolean" or "nil", got %s.', typeof(subChannel)))
+    assert(typeof(subChannel)=="string" or typeof(getComplete)=="nil", string.format('"subChannel" expected "string" or "nil", got %s.', typeof(subChannel)))
     assert(typeof(callback)=="function", string.format('"callback" expected "function", got %s.', typeof(callback)))
     
     if not subChannel then
         local nameListener = Utility.Cache.ChannelListener[name] or ChannelListener.new(name, true)
         return nameListener:Connect(getComplete, callback)
     else
-        return Utility.SubChannel.OnPackedRecieved.Event:Connect(function(data, timeSent, packet)
-            if packet.Name == name and ((getComplete and not packet["UID"] or packet.SegmentCompleted ) or not getComplete) then
-                callback(data, timeSent, packet)
-            end
-        end)
+        subChannel = (subChannel=="default" and "FrameworkChannel") or subChannel
+        subChannel = (typeof(subChannel)=="string" and Utility.Cache.SubChannelChannelManager[subChannel]) or (typeof(subChannel)=="table" and subChannel.ClassName=="SubChannelChannelManager" and subChannel)
+        assert(subChannel,
+            ("Couldn't find SubChannel. You either are calling a SubChannelChannelManager that has yet to be created or you're using a class that isn't a SubChannelChannelManager.")
+        )
+        return subChannel:Connect(name, getComplete, callback)
     end
 end
 
