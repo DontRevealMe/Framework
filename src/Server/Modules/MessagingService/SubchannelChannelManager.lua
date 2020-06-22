@@ -12,7 +12,7 @@ SubChannelChannelManager.__index = SubChannelChannelManager
 function SubChannelChannelManager:Add(amount)
     amount = amount or 1
     assert(typeof(amount)=="number", 
-    ('Argument "amount" expected "number", got %s'):format(
+    ('"amount" expected "number", got %s'):format(
         typeof(amount)
     )
     )
