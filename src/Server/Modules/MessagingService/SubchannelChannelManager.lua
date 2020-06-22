@@ -58,6 +58,11 @@ function SubChannelChannelManager:Destroy()
 end
 
 function SubChannelChannelManager.new(name)
+    assert(typeof(name)=="string",
+    ('"name" expected "string", got %s'):format(
+        typeof(name)
+    )
+    )
     local self = {}
     setmetatable(self, SubChannelChannelManager)
     self.Name = name
