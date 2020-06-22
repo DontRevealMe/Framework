@@ -30,7 +30,10 @@ function ChannelListener:Connect(getCompleteOnly, callbackFunc)
 end
 
 function ChannelListener.new(name, useCache)
-    if Utility.Cache.ChannelListener[name] and useCache then return Utility.Cache.ChannelListener[name] end
+    if useCache and Utility.Cache.ChannelListener[name] then
+        return Utility.Cache.ChannelListener[name]
+    end
+
     local self = {}
     setmetatable(self, ChannelListener)
     self.Name = name
