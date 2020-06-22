@@ -58,6 +58,20 @@ If you're creating a class, name the script after the class.
 
 Generally, if you're yielding, try to see if a Promise implementation would be better.
 
+### Error messages
+
+You should use assertions if you're doing type checking. The format for it is:
+
+```lua
+assert(statement,
+(message):format(
+  ...
+)
+)
+```
+
+A type-error error message should be structured like ``"[argument/function/...]" expected [type], got [pattern]"`` ie ``'"name" expected "string", got %s'``
+
 ### Practices
 
 - Try to avoid using ``require(id)``
