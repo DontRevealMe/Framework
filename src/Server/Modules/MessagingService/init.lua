@@ -16,9 +16,9 @@ local module = {}
 
 function module:SendAsync(name, data, subChannels)
     --  Type check + size check
-    assert(typeof(name)=="string", string.format('Expected "string" for argument "name", got %s.', typeof(name)))
-    assert(typeof(data)=="table", string.format('Expected "table" for argument "data", got %s.', typeof(data)))
-    assert(typeof(subChannels)=="boolean" or typeof(subChannels)=="nil", string.format('Expected "boolean" or "nil" from argument "subChannels", got %s.', typeof(subChannels)))
+    assert(typeof(name)=="string", string.format('name" expected "string", got %s.', typeof(name)))
+    assert(typeof(data)=="table", string.format('"data" expected "table", got %s.', typeof(data)))
+    assert(typeof(subChannels)=="boolean" or typeof(subChannels)=="nil", string.format('"subChannels" expected "boolean" or "nil", got %s.', typeof(subChannels)))
     assert(HttpService:JSONEncode(data):len() <= Configuration.SizeLimits.DataSize,
     string.format("Data has exceeded data size limits. Current limit is: %c. Data size goten was: %c",
         Configuration.SizeLimits.DataSize,
@@ -43,10 +43,10 @@ end
 
 function module:Listen(name, getComplete, subChannel, callback)
     -- Type checking
-    assert(typeof(name)=="string", string.format('Expected "string" for argument "name", got %s', typeof(name)))
-    assert(typeof(getComplete)=="boolean" or typeof(getComplete)=="nil", string.format('Expected "boolean" or "nil" for argument "getComplete", got %s.', typeof(getComplete)))
-    assert(typeof(subChannel)=="boolean" or typeof(getComplete)=="nil", string.format('Expected "boolean" or "nil" for argument "subChannel", got %s.', typeof(subChannel)))
-    assert(typeof(callback)=="function", string.format('Expected "function" for argument "callback", got %s.', typeof(callback)))
+    assert(typeof(name)=="string", string.format('"name" expected "string", got %s', typeof(name)))
+    assert(typeof(getComplete)=="boolean" or typeof(getComplete)=="nil", string.format('"getComplete" expected "boolean" or "nil", got %s.', typeof(getComplete)))
+    assert(typeof(subChannel)=="boolean" or typeof(getComplete)=="nil", string.format('"subChannel" expected "boolean" or "nil", got %s.', typeof(subChannel)))
+    assert(typeof(callback)=="function", string.format('"callback" expected "function", got %s.', typeof(callback)))
     
     if not subChannel then
         local nameListener = Utility.Cache.ChannelListener[name] or ChannelListener.new(name)

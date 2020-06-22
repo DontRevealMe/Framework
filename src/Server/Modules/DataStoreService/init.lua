@@ -63,7 +63,12 @@ function DataStoreService:PullAsync(key, defaultValue)
 end
 
 function DataStoreService:GetBackupAsync(backupNum)
-    assert(self.ClassName=="OrderedBackups" or self.ClassName=="OrderedBackupsBackup",
+    assert(typeof(backupNum)=="number",
+    ('"backupNum" expected "number", got %s'):format(
+        typeof(backupNum)
+    )
+    )
+    assert( self.ClassName=="OrderedBackups" or self.ClassName=="OrderedBackupsBackup",
     (":GetBackupAsync() is a method exclusive to OrderedBackups DataStores or OrderedBackupsBackup DataStores, got %s"):format(
         self.ClassName
     )
@@ -97,17 +102,17 @@ end
 function DataStoreService.new(name, key, callingMethod)
     if DataStoreService._cache[name .. key] then return DataStoreService[name .. key] end
     assert(typeof(name)=="string", 
-    ('Argument "name" expected "string", got %s'):format(
+    ('"name" expected "string", got %s'):format(
         typeof(name)
     )
     )
     assert(typeof(key)=="string",
-    ('Argument "key" expected "string", got %s'):format(
+    ('"key" expected "string", got %s'):format(
         typeof(key)
     )
     )
     assert(typeof(callingMethod)=="string",
-    ('Argument "callingMethod" expected "string", got %s'):format(
+    ('"callingMethod" expected "string", got %s'):format(
         typeof(callingMethod)
     )
     )
