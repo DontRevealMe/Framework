@@ -10,30 +10,52 @@ local OrderedBackups = {}
 OrderedBackups.__index = OrderedBackups
 
 function OrderedBackups:GetAsync()
-
+    return Promise.async(function(resolve)
+        resolve(self.OrderedDataStore:GetSortedAsync(false, 1):GetCurrentPage()[1])
+    end):andThen(function(key)
+        if key then
+            self.SavingKey = key.value
+            return Promise.async(function(resolve)
+                resolve(self.DataStore:GetAsync(key.value))
+            end)
+        else
+            return false
+        end
+    end)
 end
 
-function OrderedBackups:UpdateAsync()
+OrderedBackups.UpdateAsync = OrderedBackups.GetAsync
 
+function OrderedBackups:SetAsync(data)
+    self.SavingKey = self.SavingKey + 1
+    return Promise.async(function(resolve)
+        resolve(self.DataStore:SetAsync(self.SavingKey, data))
+    end):andThen(function()
+        return Promise.async(function(resolve)
+            resolve(self.OrderedDataStore:SetAsync(self.SavingKey, self.SavingKey))
+        end)
+    end)
 end
 
-function OrderedBackups:SetAsync()
-
+function OrderedBackups:RemoveAsync(key)
+    return Promise.async(function(resolve)
+        resolve(self.DataStore:RemoveAsync(key))
+    end):andThen(function()
+        return Promise.async(function(resolve)
+            resolve(self.OrderedDataStore:RemoveAsync(key))
+        end)
+    end)
 end
 
-function OrderedBackups:DeleteAsync()
-
-end
-
-function OrderedBackups.new(name, scope, key)
+function OrderedBackups.new(name, scope)
     local self = {}
     setmetatable(self, OrderedBackups)
     self.Name = name
     self.Scope = scope
-    self.Key = key
-    self.ActualName = string.format("%s\%s\%s", name, scope, key)
+    self.ActualName = ("%s\%s"):format(name, scope)
     self.DataStore = DataStoreService:GetDataStore(self.ActualName)
-
+    self.OrderedDataStore = DataStoreService:GetOrderedDataStore(self.ActualName)
+    self.SavingKey = nil
     return self
 end
 
