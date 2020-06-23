@@ -155,7 +155,7 @@ Utility.PublishQueue:SetUpdater(false, function(package)
         for _,packet in pairs(package.Packets) do
             table.insert(dataOnly, packet.Data)
         end
-        MessagingService:PublishAsync(package.Name, HttpService:JSONEncode(dataOnly))
+        MessagingService:PublishAsync(package.Name, dataOnly)
     end)
     if not succ then
         warn(string.format("Failed to send package: %q\n%s", tostring(package.Name), tostring(err)))
@@ -173,6 +173,7 @@ Utility.PublishQueue:SetUpdater(false, function(package)
         table.remove(Utility.PublishQueue.Queue, 1)
         package:Destroy()
     end
+    wait(1)
 end)
 
 -- Subchannels
