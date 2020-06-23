@@ -19,7 +19,7 @@ function module:SendAsync(name, data, subChannel)
     --  Type check + size check
     subChannel = (subChannel=="default" and "FrameworkChannel") or subChannel 
 
-    assert(typeof(name)=="string",
+    assert(typeof(name)=="string" or (name==nil and subChannel),
         ('name" expected "string", got %s.'):format(
             typeof(name)
         )
@@ -37,8 +37,8 @@ function module:SendAsync(name, data, subChannel)
     )
     assert(Utility.Cache.SubChannelsManager[subChannel] or (typeof(subChannel) == "table" and subChannel.ClassName == "SubChannelsManager"),
         ('Expected a SubChannel at %s, got %s.'):format(
-            name,
-            typeof(Utility.Cache.SubChannelsManager[name])
+            subChannel,
+            typeof(Utility.Cache.SubChannelsManager[subChannel])
         )
     )
     assert((typeof(subChannel)=="table" and subChannel.ClassName=="SubChannelsManager") or typeof(subChannel)=="nil" or typeof(subChannel)=="string",
