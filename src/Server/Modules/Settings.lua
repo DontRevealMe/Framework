@@ -1,7 +1,12 @@
 return {
     DataStoreService = {
         SaveInStudio = true; --  Save data in studio. Due to :BindToClose() being buggy, it can result to wait times of 30 seconds before studio even shuts down.
-        OnUpdateMessaging = true; ---  If the Framework's OnUpdate is enabled.
+        OnUpdateMessaging = {
+            Enabled = true; --  If OnUpdate using MessagingService is enabled or not
+            UseOwnChannels = false; --  Whether or not to use own dedicated channels
+            SubChannelsName = "FrameworkDSS"; --  If use your own channels is true, it will use this name for SubChannelChannels.
+            SubChannelsChannels = 2; --  Amount of SubChannelsChannels
+        }
     },
     MessagingService = {
         DefaultSubChannels = {
