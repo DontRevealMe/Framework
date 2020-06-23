@@ -94,6 +94,14 @@ function module:Listen(name, getComplete, subChannel, callback)
     end
 end
 
+function module:ListenerExists(name)
+    return Utility.Cache.ChannelListener[name] ~= nil
+end
+
+function module:SubChannelChannelManagerExists(name)
+    return Utility.Cache.SubChannelChannelManager[name] ~= nil
+end
+
 Utility.PacketQueue:SetUpdater(false, function()
 
     local function sendPackage(package, dontReplace)
