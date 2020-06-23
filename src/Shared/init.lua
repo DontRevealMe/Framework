@@ -97,7 +97,8 @@ return function(library)
                     -- To do: Add ignore capabilities
                     parent.Children[child.Name] = {
                         Self = child,
-                        Children = {}
+                        Children = {},
+                        Depth = parent.Depth + 1
                     }
                     if #child:GetChildren()>0 then 
                         compileRecursion(parent.Children[child.Name])
@@ -118,7 +119,8 @@ return function(library)
                 -- Initial set up
                 compiled[framework.Name] = {
                     Self = framework.Self,
-                    Children = {}
+                    Children = {},
+                    Depth = 1
                 }
                 compileRecursion(compiled[framework.Name])
             end
@@ -126,8 +128,8 @@ return function(library)
                 -- Make the dictionary only contains key values of the the name of the module and the module itself.
                 local newCompiled = {}
                 local function getModulesRecursion(parent)
-                    for name,child in pairs(parent.Children) do
-                        if child.Self.ClassName=="ModuleScript" then
+                    for _,child in pairs(parent.Children) do
+                        if (child.Depth < ((typeof(newCompiled[child.Self.Name])=="table" and newCompiled[child.Self.Name].Depth) or 999999)) and child.Self.ClassName=="ModuleScript" then
                             newCompiled[child.Self.Name] = child
                         end
                         if len(child.Children)>0 then
