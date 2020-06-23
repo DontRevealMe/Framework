@@ -41,7 +41,7 @@ function ChannelListener.new(name, useCache)
     self._maid = Maid.new()
     self.Connection = MessagingService:SubscribeAsync(name, function(package)
         local timeSent = package.Sent
-        package = HttpService:JSONDecode(package.Data)
+        package = package.Data
         for _,packet in pairs(package) do
             if packet["UID"] then
                 --  Segment packet
