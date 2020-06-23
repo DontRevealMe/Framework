@@ -35,7 +35,7 @@ function module:SendAsync(name, data, subChannel)
             HttpService:JSONEncode(data):len()
         )
     )
-    assert(Utility.Cache.SubChannelsManager[subChannel ] or (typeof(subChannel) == "table" and subChannel.ClassName == "SubChannelsManager"),
+    assert(Utility.Cache.SubChannelsManager[subChannel] or (typeof(subChannel) == "table" and subChannel.ClassName == "SubChannelsManager"),
         ('Expected a SubChannel at %s, got %s.'):format(
             name,
             typeof(Utility.Cache.SubChannelsManager[name])
