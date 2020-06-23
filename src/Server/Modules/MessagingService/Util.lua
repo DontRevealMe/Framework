@@ -15,7 +15,7 @@ local Util = {
     PacketSegments = {},
     Cache = {
         ChannelListener = {},
-        SubChannelChannelManager = {}
+        SubChannelsManager = {}
     }
 }
 

@@ -1,4 +1,4 @@
---  Manages all SubChannelChannels
+--  Manages all the listeners needed to form subchannels
 --  @author DontRevealMe
 
 local require = require(game:GetService("ReplicatedStorage"):WaitForChild("Framework"))
@@ -7,11 +7,11 @@ local Maid = require("Maid")
 local Utility = require(script.Parent:WaitForChild("Util"))
 local ChannelListener = require(script.Parent:WaitForChild("ChannelListener"))
 
-local SubChannelChannelManager = {}
-SubChannelChannelManager.__index = SubChannelChannelManager
-SubChannelChannelManager.ClassName = "SubChannelChannelManager"
+local SubChannelsManager = {}
+SubChannelsManager.__index = SubChannelsManager
+SubChannelsManager.ClassName = "SubChannelsManager"
 
-function SubChannelChannelManager:Add(amount)
+function SubChannelsManager:Add(amount)
     amount = amount or 1
     assert(typeof(amount)=="number", 
         ('"amount" expected "number", got %s'):format(
@@ -35,7 +35,7 @@ function SubChannelChannelManager:Add(amount)
     end
 end
 
-function SubChannelChannelManager:Remove(index, destroy)
+function SubChannelsManager:Remove(index, destroy)
     assert(typeof(index)=="number", 
         ('Argument "index" expected "number", got %s'):format(
             typeof(index)
@@ -59,12 +59,12 @@ function SubChannelChannelManager:Remove(index, destroy)
     end
 end
 
-function SubChannelChannelManager:Destroy()
+function SubChannelsManager:Destroy()
     self._maid:DoCleaning()
     self = nil
 end
 
-function SubChannelChannelManager:Connect(name, getComplete, listener)
+function SubChannelsManager:Connect(name, getComplete, listener)
     local UID = game:GetService("HttpService"):GenerateGUID(false)
     self._listeners[UID] = {
         Name = name,
@@ -81,9 +81,9 @@ function SubChannelChannelManager:Connect(name, getComplete, listener)
     })
 end
 
-function SubChannelChannelManager.new(name, useCache)
-    if useCache and Utility.Cache.SubChannelChannelManager[name] then
-        return Utility.Cache.SubChannelChannelManager[name]
+function SubChannelsManager.new(name, useCache)
+    if useCache and Utility.Cache.SubChannelsManager[name] then
+        return Utility.Cache.SubChannelsManager[name]
     end
 
     assert(typeof(name)=="string",
@@ -92,7 +92,7 @@ function SubChannelChannelManager.new(name, useCache)
         )
     )
     local self = {}
-    setmetatable(self, SubChannelChannelManager)
+    setmetatable(self, SubChannelsManager)
     self.Name = name
     self.ChannelListeners = {}
     self._listenerConnections = {}
@@ -104,10 +104,10 @@ function SubChannelChannelManager.new(name, useCache)
     self._maid:GiveTask(self._onPacketRecived)
 
     if useCache then
-        Utility.Cache.SubChannelChannelManager[name] = self
+        Utility.Cache.SubChannelsManager[name] = self
     end
 
     return self
 end
 
-return SubChannelChannelManager
+return SubChannelsManager

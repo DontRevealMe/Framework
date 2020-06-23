@@ -10,7 +10,7 @@ local Utility = require(script:WaitForChild("Util"))
 local Package = require(script:WaitForChild("Package"))
 local Packet = require(script:WaitForChild("Packet"))
 local ChannelListener = require(script:WaitForChild("ChannelListener"))
-local SubChannelChannelManager = require(script:WaitForChild("SubChannelChannelManager"))
+local SubChannelsManager = require(script:WaitForChild("SubChannelsManager"))
 
 local module = {}
 
@@ -35,14 +35,14 @@ function module:SendAsync(name, data, subChannel)
             HttpService:JSONEncode(data):len()
         )
     )
-    assert(Utility.Cache.SubChannelChannelManager[subChannel ] or (typeof(subChannel) == "table" and subChannel.ClassName == "SubChannelChannelManager"),
+    assert(Utility.Cache.SubChannelsManager[subChannel ] or (typeof(subChannel) == "table" and subChannel.ClassName == "SubChannelsManager"),
         ('Expected a SubChannel at %s, got %s.'):format(
             name,
-            typeof(Utility.Cache.SubChannelChannelManager[name])
+            typeof(Utility.Cache.SubChannelsManager[name])
         )
     )
-    assert((typeof(subChannel)=="table" and subChannel.ClassName=="SubChannelChannelManager") or typeof(subChannel)=="nil" or typeof(subChannel)=="string",
-        ('"subChannel" expected "SubChannelChannelManager" or "nil" or "string", got %s'):format(
+    assert((typeof(subChannel)=="table" and subChannel.ClassName=="SubChannelsManager") or typeof(subChannel)=="nil" or typeof(subChannel)=="string",
+        ('"subChannel" expected "SubChannelsManager" or "nil" or "string", got %s'):format(
             typeof(subChannel)
         )
     )
@@ -53,9 +53,9 @@ function module:SendAsync(name, data, subChannel)
         Utility.PacketQueue:Enqueue(packet)
     else
         subChannel = (subChannel=="default" and "FrameworkChannel") or subChannel
-        subChannel = (typeof(subChannel)=="string" and Utility.Cache.SubChannelChannelManager[subChannel]) or subChannel 
-        assert(typeof(subChannel)=="table" and subChannel.ClassName=="SubChannelChannelManager",
-            ("Couldn't find SubChannelChannelManager.")
+        subChannel = (typeof(subChannel)=="string" and Utility.Cache.SubChannelsManager[subChannel]) or subChannel 
+        assert(typeof(subChannel)=="table" and subChannel.ClassName=="SubChannelsManager",
+            ("Couldn't find SubChannelsManager.")
         )
         packet = Packet.new(data, subChannel.Name .. Random.new(os.time()):NextInteger(1, #subChannel.ChannelListeners))
         packet.Data.Name = name
@@ -86,9 +86,9 @@ function module:Listen(name, getComplete, subChannel, callback)
         return nameListener:Connect(getComplete, callback)
     else
         subChannel = (subChannel=="default" and "FrameworkChannel") or subChannel
-        subChannel = (typeof(subChannel)=="string" and Utility.Cache.SubChannelChannelManager[subChannel]) or (typeof(subChannel)=="table" and subChannel.ClassName=="SubChannelChannelManager" and subChannel)
+        subChannel = (typeof(subChannel)=="string" and Utility.Cache.SubChannelsManager[subChannel]) or (typeof(subChannel)=="table" and subChannel.ClassName=="SubChannelsManager" and subChannel)
         assert(subChannel,
-            ("Couldn't find SubChannel. You either are calling a SubChannelChannelManager that has yet to be created or you're using a class that isn't a SubChannelChannelManager.")
+            ("Couldn't find SubChannel. You either are calling a SubChannelsManager that has yet to be created or you're using a class that isn't a SubChannelsManager.")
         )
         return subChannel:Connect(name, getComplete, callback)
     end
@@ -98,8 +98,8 @@ function module:ListenerExists(name)
     return Utility.Cache.ChannelListener[name] ~= nil
 end
 
-function module:SubChannelChannelManagerExists(name)
-    return Utility.Cache.SubChannelChannelManager[name] ~= nil
+function module:SubChannelsManagerExists(name)
+    return Utility.Cache.SubChannelsManager[name] ~= nil
 end
 
 Utility.PacketQueue:SetUpdater(false, function()
@@ -178,7 +178,7 @@ end)
 -- Subchannels
 
 if Configuration.DefaultSubChannels.Enabled then
-    SubChannelChannelManager.new("FrameworkChannel", true):Add(Configuration.DefaultSubChannels.Amount)
+    SubChannelsManager.new("FrameworkChannel", true):Add(Configuration.DefaultSubChannels.Amount)
 end
 
 return module
