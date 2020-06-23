@@ -8,7 +8,7 @@ local SubChannelsManager = require("SubChannelsManager")
 local Configuration = require("Server.Modules.Settings")
 
 local ChannelName = (Configuration.DataStoreService.UseOwnChannels and Configuration.DataStoreService.SubChannelsName) or "FrameworkChannel"
-SubChannelsManager = Configuration.DataStoreService.OnUpdateMessaging.Enabled and ((not Configuration.DataStoreService.OnUpdateMessaging.UseOwnChannels and SubChannelsManager.new(name, true)) or SubChannelsManager.new(name, true):Add(Configuration.DataStoreService.OnUpdateMessaging.SubChannelsChannels))
+SubChannelsManager = Configuration.DataStoreService.OnUpdateMessaging.Enabled and ((not Configuration.DataStoreService.OnUpdateMessaging.UseOwnChannels and SubChannelsManager.new(ChannelName, true)) or SubChannelsManager.new(ChannelName, true):Add(Configuration.DataStoreService.OnUpdateMessaging.SubChannelsChannels))
 
 local module = {}
 
