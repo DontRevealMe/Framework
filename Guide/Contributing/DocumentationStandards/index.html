@@ -460,7 +460,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../../../API/Classes/MessagingService/Packge.md" title="Package" class="md-nav__link">
+    <a href="../../../API/Classes/MessagingService/Package/" title="Package" class="md-nav__link">
       Package
     </a>
   </li>
@@ -718,8 +718,8 @@
 <li>A text editor that supports MarkdownLint</li>
 </ul>
 <h2 id="documenting-a-methodfunction">Documenting a method/function</h2>
-<p>Generally, methods and functions will be documented inside of tables. We try to follow Roblox's standard as much as possible here.</p>
-<div class="codehilite"><pre><span></span><code>``returnType`` :MyFunction(``string`` myArgument, ``expectedArgumentType``, ``Variant`` myOptionalVariant=``defaultValue`` ``[optional]``) ``[yields]``
+<p>Generally, methods and functions will be documented inside of tables. We try to follow Roblox's standard as much as possible here. Any extra info on the argument should be placed after it.</p>
+<div class="codehilite"><pre><span></span><code>``returnType`` :MyFunction(``string`` myArgument, ``Variant`` myOptionalVariant=``defaultValue`` ``[optional]``) ``[yields]``
 </code></pre></div>
 
 
@@ -736,11 +736,11 @@ DESCRIPTION
 
 | Property Name | Description |
 |---------------|-------------|
-| ... | ... |
+| ``type`` myName ``[internal]`` | ... |
 
 | Function Name | Description | Returns |
 |---------------|-------------|---------|
-| ... | ... | ... |
+| ``returnType`` myFunction(...) ``[internal]`` ``[optional]`` | ... | If you have more information on the return type, put it here. |
 </code></pre></div>
 
 
