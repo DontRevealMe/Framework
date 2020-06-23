@@ -99,7 +99,7 @@ function SubChannelsManager.new(name, useCache)
     self._maid = Maid.new()
     self._onPacketRecived = Signal.new()
     self.OnPacketRecived = self._onPacketRecived.Event
-    self._listenerFunctions = {}
+    self._listeners = {}
 
     self._maid:GiveTask(self._onPacketRecived)
 
