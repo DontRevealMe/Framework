@@ -21,7 +21,7 @@ end
 
 function ChannelListener:Connect(getCompleteOnly, callbackFunc)
     local con = self.OnPacketRecivedSignal.Event:Connect(function(completed, packet, timeStamp)
-        if (completed and getCompleteOnly) or not getCompleteOnly then
+        if (completed and getCompleteOnly) or not getCompleteOnly or packet.Global then
             callbackFunc(packet.Data, timeStamp, packet)
         end
     end)

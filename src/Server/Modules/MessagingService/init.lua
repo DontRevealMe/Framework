@@ -15,7 +15,7 @@ local SubChannelsManager = require(script:WaitForChild("SubChannelsManager"))
 local module = {}
 
 
-function module:SendAsync(name, data, subChannel)
+function module:SendAsync(name, data, subChannel, compress)
     --  Type check + size check
     subChannel = (subChannel=="default" and "FrameworkChannel") or subChannel 
 
