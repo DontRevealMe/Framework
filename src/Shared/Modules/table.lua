@@ -12,22 +12,27 @@ local module = {}
     @return [t:Tuple] clonedTables
 **--]]
 function module.deepcopy(...)
-    local result = {}
-    for _,tab in pairs({...}) do
-        local orig_type = type(tab)
+    local function deepcopy(orig, copies)
+        copies = copies or {}
+        local orig_type = type(orig)
         local copy
         if orig_type == 'table' then
-            copy = {}
-            for orig_key, orig_value in next, tab, nil do
-                copy[module.deepcopy(orig_key)] = module.deepcopy(orig_value)
+            if copies[orig] then
+                copy = copies[orig]
+            else
+                copy = {}
+                copies[orig] = copy
+                for orig_key, orig_value in next, orig, nil do
+                    copy[deepcopy(orig_key, copies)] = deepcopy(orig_value, copies)
+                end
+                setmetatable(copy, deepcopy(getmetatable(orig), copies))
             end
-            setmetatable(copy, module.deepcopy(getmetatable(tab)))
         else -- number, string, boolean, etc
-            copy = tab
+            copy = orig
         end
-        table.insert(result, copy)
+        return copy
     end
-    return unpack(result)
+    return deepcopy(...)
 end
 
 --[[**

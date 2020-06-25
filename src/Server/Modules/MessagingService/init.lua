@@ -15,7 +15,7 @@ local SubChannelsManager = require(script:WaitForChild("SubChannelsManager"))
 local module = {}
 
 
-function module:SendAsync(name, data, subChannel, compress)
+function module:SendAsync(name, data, subChannel)
     --  Type check + size check
     subChannel = (subChannel=="default" and "FrameworkChannel") or subChannel 
 
@@ -55,9 +55,12 @@ function module:SendAsync(name, data, subChannel, compress)
         subChannel = (subChannel=="default" and "FrameworkChannel") or subChannel
         subChannel = (typeof(subChannel)=="string" and Utility.Cache.SubChannelsManager[subChannel]) or subChannel 
         assert(typeof(subChannel)=="table" and subChannel.ClassName=="SubChannelsManager",
-            ("Couldn't find SubChannelsManager.")
+            ("Couldn't find SubChannelsManager. This might be due to that you didn't pass in a string value or you passed in a string value, but there was no SubChannel class by that name.")
         )
         packet = Packet.new(data, subChannel.Name .. Random.new(os.time()):NextInteger(1, #subChannel.ChannelListeners))
+        --  These could be shortened down to possibly save a couple more characters, but nothing significant.
+        --  To do someday:
+        --  - Combinne name, order, and global into 1 key called "m" which is divided by "/". order/global/name <- To solve the issue with name having a / in it, just put name last so we can sure that there isn't a geniune split.
         if name then
             packet.Data.Name = name
         else
