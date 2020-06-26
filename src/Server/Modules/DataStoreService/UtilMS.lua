@@ -13,11 +13,11 @@ SubChannelsManager = Configuration.DataStoreService.OnUpdateMessaging.Enabled an
 local module = {}
 
 function module:SendAsync(data)
-    if Configuration.DataStoreService.OnUpdateMessaging.Enabled then
-        return Promise.async(function(resolve)
-            resolve(MessagingService:SendAsync(""):await())
-        end)
-    end
+	if Configuration.DataStoreService.OnUpdateMessaging.Enabled then
+		return Promise.async(function(resolve)
+			resolve(MessagingService:SendAsync(""):await())
+		end)
+	end
 end
 
 function module:Connect(listener)
