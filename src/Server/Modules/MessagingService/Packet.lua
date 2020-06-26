@@ -9,24 +9,24 @@ Packet.__index = Packet
 Packet.ClassName = "Packet"
 
 function Packet:GetSize()
-    return Utility:GetSize(self.Data)
+	return Utility:GetSize(self.Data)
 end
 
 function Packet:Destroy()
-    self.Response:Destroy()
-    self = nil
+	self.Response:Destroy()
+	self = nil
 end
 
 function Packet.new(data, name)
-    local self = {}
-    setmetatable(self, Packet)
-    self.Name = name
-    self.Data = {
-        Data = data
-    }
-    self.Size = self:GetSize()
-    self.Response = Signal.new()
-    return self
+	local self = {}
+	setmetatable(self, Packet)
+	self.Name = name
+	self.Data = {
+		d = data
+	}
+	self.Size = self:GetSize()
+	self.Response = Signal.new()
+	return self
 end
 
 return Packet

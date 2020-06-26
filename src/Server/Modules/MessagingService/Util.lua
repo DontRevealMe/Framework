@@ -8,23 +8,23 @@ local Signal = require("Signal")
 local Configuration = require("Settings").MessagingService
 
 local Util = {
-    PacketQueue = Queue.new(),
-    PublishQueue = Queue.new(),
-    PacketBuffer = {},
-    CurrentlyBoxing = {},
-    PacketSegments = {},
-    Cache = {
-        ChannelListener = {},
-        SubChannelsManager = {}
-    }
+	PacketQueue = Queue.new(),
+	PublishQueue = Queue.new(),
+	PacketBuffer = {},
+	CurrentlyBoxing = {},
+	PacketSegments = {},
+	Cache = {
+		ChannelListener = {},
+		SubChannelsManager = {}
+	}
 }
 
 function Util:GetSize(...)
-    local size = 0
-    for _,v in pairs({...}) do
-        size = size + (typeof(v)=="table" and HttpService:JSONEncode(v):len()) or (typeof(v)=="string" and v:len())
-    end
-    return size
+	local size = 0
+	for _,v in pairs({...}) do
+		size = size + (typeof(v)=="table" and HttpService:JSONEncode(v):len()) or (typeof(v)=="string" and v:len())
+	end
+	return size
 end
 
 return Util
