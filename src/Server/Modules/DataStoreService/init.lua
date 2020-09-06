@@ -110,8 +110,16 @@ function DataStoreService:_ActivateBindToClose()
 end
 
 function DataStoreService:Increment(delta)
-	assert(typeof(self.Value)=="number", string.format('Expected DataStore value to be "number", got %s', typeof(self.Value)))
-	assert(typeof(delta)=="number", string.format('"delta" expected "number", got %s', typeof(delta)))
+	assert(typeof(self.Value)=="number",
+		('Expected DataStore value to be "number", got %s'):format(
+			typeof(self.Value)
+		)
+	)
+	assert(typeof(delta)=="number",
+		('"delta" expected "number", got %s'):format(
+			typeof(delta)
+		)
+	)
 	self.Value = self.Value + delta
 	return self.Value
 end
