@@ -15,7 +15,8 @@ nav:
         - ChannelListener: API\Classes\MessagingService\ChannelListener.md
     - Libraries:
       - DataStoreService: API\Libraries\DataStoreService.md
-      - MessagingService: API\Libraries\MessagingService.md
+      - MessagingService: API\Libraries\MessagingService\index.md
+      - SubChannelsManager: API\Libraries\MessagingService\SubChannelsManager.md
       - Queue: API\Libraries\Queue.md
     - Sides:
       - Server: API\Sides\Server.md

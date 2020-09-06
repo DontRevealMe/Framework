@@ -30,19 +30,19 @@ None.
 | ``Promise`` :SendAsync(``table`` data, ``string`` name, ``bool`` subChannels=``nil`` ``[optional]``) | Sends data to other servers. | ``RBXScriptConnection`` |
 | ``RBXScriptConnection`` :Listen(``string`` name, ``bool`` getComplete=``true`` ``[optional]``, ``bool`` subChannels=``true`` ``[optional]``, ``Function`` callback) | Listens for a specific channel. | ``TopicListener`` |
 
-### :SendAsync
+#### :SendAsync
 
-| ``Promise`` :SendAsync(``table`` data, ``string`` name, ``bool`` subChannels=``false`` ``[optional]``) |
+| ``Promise`` :SendAsync(``table`` data, ``string`` name, ``bool`` subChannel=``nil`` ``[optional]``) |
 |----|
-| Sends data to other servers. ``subChannels`` argument is used to determine whether or not the packet will be sent through a subchannel channel. |
+| Sends data to other servers. If the ``subChannel`` argument is set to nil, the packet won't be sent through a SubChannel. If the ``name`` argument is nil, but the ``subChannel`` argument is not, the packet will become a global packet and will fire all SubChannel listeners regardless of what name they're listening to. |
 
-### Listen
+#### Listen
 
-| ``RBXScriptConnection`` :Listen(``string`` name, ``bool`` getComplete=``true`` ``[optional]``, ``bool`` subChannels=``true`` ``[optional]``, ``Function`` callback) |
+| ``RBXScriptConnection`` :Listen(``string`` name, ``bool`` getComplete=``true`` ``[optional]``, ``bool`` subChannel=``nil`` ``[optional]``, ``Function`` callback) |
 |--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Listens for a specfiic channel. ``getComplete`` argument means it will only recieve complete packets and not segment packets. ``subChannels`` argument means whether or not the listener will listen onto subchannels instead of regular channels. Callback will be passed arguments such as ``data``, ``timeSent``, and ``packet``. |
 
-#### Callback arguments
+##### Callback arguments
 
 Everytime a packet is sent, the callback function will be passed the following arguments:
 
@@ -71,3 +71,8 @@ The con of this is that it may delay publishes by several seconds which is why i
 
 The idea of SubChannel is to reduce the amount of Channels being listened onto. This means you could have 3 SubChannel Channels but have 10 packets firing through 10 channels.
 The cons of a SubChannels is that they may have less capacity vs a normal channel since they also need to store the topic name.
+When firing a packet through a SubChannel it will randomly pick a SubChannelChannel to be sent through. This is calculated using:
+
+```lua
+Random.new(os.time()):NextInteger(1, MAX_CHANNELS)
+```

@@ -19,7 +19,7 @@
 
 | Function Name | Description | Returns |
 |---------------|-------------|---------|
-| ``NormalDataStore``/``OrderedBackups``/``OrderedDataStore`` .new(``string`` name, ``string`` key, ``string`` callingMethod) | Creates a new DataStore class. | ``DataStore``/``OrderedBackup``/``OrderedDataStore`` |
+| ``NormalDataStore``/``OrderedBackups``/``OrderedDataStore`` .new(``string`` name, ``string`` key, ``string`` callingMethod) | Creates a new DataStore class. | ``DataStore`` |
 
 ### .new
 

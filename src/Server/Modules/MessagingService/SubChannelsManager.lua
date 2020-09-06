@@ -26,7 +26,7 @@ function SubChannelsManager:Add(amount)
 		channelListener:Connect(false, function(data, timeSent, packet)
 			if packet["Name"] then
 				for _,listener in pairs(self._listeners) do
-					if listener.Name == packet.Name and ( (listener.GetComplete and packet.IsCompleted) or not listener.GetComplete ) then
+					if (listener.Name == packet.Name or listener.Name==nil) and ( (listener.GetComplete and packet.IsCompleted) or not listener.GetComplete ) then
 						listener.Listener(data, timeSent, packet)
 					end
 				end
@@ -95,7 +95,6 @@ function SubChannelsManager.new(name, useCache)
 	setmetatable(self, SubChannelsManager)
 	self.Name = name
 	self.ChannelListeners = {}
-	self._listenerConnections = {}
 	self._maid = Maid.new()
 	self._onPacketRecived = Signal.new()
 	self.OnPacketRecived = self._onPacketRecived.Event
