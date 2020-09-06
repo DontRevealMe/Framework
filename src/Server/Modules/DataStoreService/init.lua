@@ -92,7 +92,7 @@ function DataStoreService:BindToPlayer(player)
 end
 
 function DataStoreService:Destroy()
-	self:_ActivateBindToClose()
+	DataStoreService:_cache[self.Name .. self.Key] = nil
 	self = nil
 end
 
@@ -151,7 +151,9 @@ function DataStoreService.new(name, key, callingMethod)
 	self.ValueChanged = self._valueChanged.Event
 	self.OnUpdate = self._onUpdate.Event
 	self._maid = Maid.new()
-	self._bindToClose = {}
+	self._bindToClose = {
+		self:Destroy()
+	}
 	
 	self._maid:GiveTask(self._onUpdate)
 	self._maid:GiveTask(self._valueChanged)
