@@ -152,7 +152,7 @@ function DataStoreService.new(name, key, callingMethod)
 	self.OnUpdate = self._onUpdate.Event
 	self._maid = Maid.new()
 	self._bindToClose = {
-		self:Destroy()
+		self["Destroy"]
 	}
 	
 	self._maid:GiveTask(self._onUpdate)
