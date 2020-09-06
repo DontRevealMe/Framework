@@ -96,19 +96,41 @@ function DataStoreService:GetBackupAsync(backupNum)
 end
 
 function DataStoreService:BindToPlayer(player)
-
+	assert(typeof(player)=="Instance" and player.ClassName=="player",  string.format('"player" expected "player", got %s', typeof(player)))
+	self:BindToClose(function()
+		self:FlushAsync()
+	end)
+	self._maid:GiveTask(game:GetService("Players").PlayerRemoving:Connect(function(leavingPlayer)
+		if leavingPlayer==player then
+			self:FlushAsync()
+			self:Destroy()
+		end
+	end))
 end
 
 function DataStoreService:Destroy()
-
+	self:_ActivateBindToClose()
+	self = nil
 end
 
 function DataStoreService:BindToClose(callback)
-
+	assert(typeof(callback)=="function", string.format('"callback" expected "Function", got %s', typeof(callback)))
+	table.insert(self._bindToClose, callback)
 end
 
-function DataStoreService:Increment(detla)
+function DataStoreService:_ActivateBindToClose()
+	for _,func in pairs(self._bindToClose) do
+		xpcall(func, function(err)
+			print("Failed to execute BindToClose function.\n" .. err)
+		end)
+	end
+end
 
+function DataStoreService:Increment(delta)
+	assert(typeof(self.Value)=="number", string.format('Expected DataStore value to be "number", got %s', typeof(self.Value)))
+	assert(typeof(delta)=="number", string.format('"delta" expected "number", got %s', typeof(delta)))
+	self.Value = self.Value + delta
+	return self.Value
 end
 
 function DataStoreService.new(name, key, callingMethod)
@@ -146,6 +168,7 @@ function DataStoreService.new(name, key, callingMethod)
 	self.ValueChanged = self._valueChanged.Event
 	self.OnUpdate = self._onUpdate.Event
 	self._maid = Maid.new()
+	self._bindToClose = {}
 	
 	self._maid:GiveTask(self._onUpdate)
 	self._maid:GiveTask(self._valueChanged)

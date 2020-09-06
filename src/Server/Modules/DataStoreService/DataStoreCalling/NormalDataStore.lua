@@ -39,7 +39,6 @@ function DataStore.new(name, scope)
 	self.Scope = scope
 	self.ActualName = ("%s/%s"):format(name, scope)
 	self.DataStore = DataStoreService:GetDataStore(name, scope)
-
 	return self
 end
 
