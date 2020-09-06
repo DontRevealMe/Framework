@@ -92,7 +92,7 @@ function DataStoreService:BindToPlayer(player)
 end
 
 function DataStoreService:Destroy()
-	DataStoreService:_cache[self.Name .. self.Key] = nil
+	DataStoreService._cache[self.Name .. self.Key] = nil
 	self = nil
 end
 
