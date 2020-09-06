@@ -41,34 +41,17 @@ function DataStoreService:FlushAsync()
 	end)
 end
 
-function DataStoreService:PullAsync(key, defaultValue)
-	key = (self.ClassName=="OrderedBackups" and defaultValue) or key
+function DataStoreService:PullAsync(key, defaultCheckFunction)
+	key = key or (self.ClassName=="OrderedBackups" and self.CallingMethod.SavingKey)
 	return self.CallingMethod:GetAsync(self.Key or key):andThen(function(data)
-		if not data then
-			local function recursiveCompare(parent, compare)
-				local hadToReplace = false
-				for i,v in pairs(parent) do
-					if not compare[i] then
-						compare[i] = v
-						hadToReplace = true
-					elseif typeof(v)=="table" then
-						recursiveCompare(v, compare[i])
-					end
-				end
-				return compare, hadToReplace
-			end
-			--  Compare values
-			if not data then
-				self.Value = defaultValue
-				return self.Value
-			else
-				local comparedData, replaced = recursiveCompare(defaultValue, data)
-				self.Value = comparedData
-				return self.Value, replaced
-			end
-		else
+		data = (typeof(defaultCheckFunction)=="function" and defaultCheckFunction(data)~=nil) or data
+		if defaultCheckFunction==nil and not data then
+			return defaultCheckFunction
+		end
+		if data then
 			self.Value = data
 		end
+		return self.Value
 	end)
 end
 
@@ -89,7 +72,7 @@ function DataStoreService:GetBackupAsync(backupNum)
 			newDS.ClassName = "OrderedBackupBackup"
 			newDS.CalllingMethod = nil
             newDS.CallingMethod = callingMethod
-            return true
+            return newDS
         end
         return false
 	end)
